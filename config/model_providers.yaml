@@ -1,0 +1,36 @@
+# 学迹分析 · 视觉模型 provider 配置
+#
+# 换模型/加 provider/改接口地址都只改这里，不碰代码。
+# api_key 从环境变量读（见 .env.example），不进代码不进 git。
+#
+# enabled: true 的 provider 才会参与多模型判题。至少配 1 个。
+# 国内视觉模型推荐：通义千问 qwen-vl / 智谱 glm-4v
+
+providers:
+  - name: dashscope
+    enabled: true
+    base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+    model: qwen-vl-plus            # 通义视觉模型(plus，有免费额度)
+    api_key_env: DASHSCOPE_API_KEY
+    # 通义千问用 OpenAI 兼容格式，无需额外 header
+
+  - name: zhipu
+    enabled: false  # 暂未配置 key，先用单模型跑通；有 key 后改 true
+    base_url: https://open.bigmodel.cn/api/paas/v4
+    model: glm-4v
+    api_key_env: ZHIPU_API_KEY
+    # 智谱 GLM-4V 同样走 OpenAI 兼容格式
+
+  # 想加更多 provider 照着复制即可，例如：
+  # - name: moonshot
+  #   enabled: false
+  #   base_url: https://api.moonshot.cn/v1
+  #   model: moonshot-v1-8k-vision-preview
+  #   api_key_env: MOONSHOT_API_KEY
+
+# 举一反三用的文本模型（不要求视觉能力）
+practice_model:
+  name: dashscope-text
+  base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+  model: qwen-plus
+  api_key_env: DASHSCOPE_API_KEY

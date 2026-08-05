@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>学迹分析</title>
+  <style>
+    :root {
+      --primary: #4F7CFF;
+      --success: #34C759;
+      --warning: #FF9500;
+      --danger: #FF3B30;
+      --bg: #F5F7FA;
+      --card: #FFFFFF;
+      --text: #1D1D1F;
+      --text-secondary: #8E8E93;
+      --border: #E5E5EA;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: 70px;
+      line-height: 1.5;
+    }
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header h1 { font-size: 20px; font-weight: 600; }
+    .header p { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid var(--border);
+      padding: 6px 0 env(safe-area-inset-bottom);
+      z-index: 100;
+    }
+    .tab-item {
+      text-align: center;
+      padding: 4px 12px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+    .tab-item.active { color: var(--primary); font-weight: 500; }
+    .tab-icon { font-size: 22px; display: block; margin-bottom: 2px; }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      margin: 12px 16px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 12px;
+    }
+    .metric { text-align: center; padding: 8px 4px; }
+    .metric-value { font-size: 24px; font-weight: 700; }
+    .metric-value.good { color: var(--success); }
+    .metric-value.bad { color: var(--danger); }
+    .metric-value.mid { color: var(--warning); }
+    .metric-label { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+    .mastery-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .mastery-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: var(--bg);
+      font-size: 13px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .dot.good { background: var(--success); }
+    .dot.bad { background: var(--danger); }
+    .dot.mid { background: var(--warning); }
+
+    .error-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .error-row:last-child { border-bottom: none; }
+    .error-name { font-weight: 500; }
+    .error-count { color: var(--text-secondary); }
+    .error-trend { font-size: 12px; padding: 2px 8px; border-radius: 10px; }
+    .trend-up { background: #E8F5E8; color: #2E7D32; }
+    .trend-down { background: #FFE8E8; color: #C62828; }
+    .trend-flat { background: #F0F0F0; color: #666; }
+
+    .rule-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .rule-item:last-child { border-bottom: none; }
+    .rule-icon { font-size: 18px; flex-shrink: 0; }
+
+    .suggestion { padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .suggestion:last-child { border-bottom: none; }
+
+    .loading { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
+    .loading .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-state { text-align: center; padding: 40px 20px; color: var(--danger); }
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+    .form-input, .form-select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+      background: white;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--primary); }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .btn-primary { background: var(--primary); color: white; width: 100%; }
+    .btn-primary:active { opacity: 0.8; }
+    .btn-secondary { background: var(--bg); color: var(--text); }
+    .btn-sm { padding: 6px 14px; font-size: 13px; border-radius: 8px; }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .history-week { font-size: 16px; font-weight: 600; }
+    .history-date { font-size: 12px; color: var(--text-secondary); }
+    .history-arrow { color: var(--text-secondary); font-size: 18px; }
+
+    /* 逐题录入 */
+    .q-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .q-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600;
+      flex-shrink: 0;
+    }
+    .q-buttons { display: flex; gap: 6px; }
+    .q-btn {
+      padding: 5px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      background: white;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .q-btn.ok.active { background: #E8F5E8; border-color: var(--success); color: #2E7D32; font-weight: 600; }
+    .q-btn.wrong.active { background: #FFE8E8; border-color: var(--danger); color: #C62828; font-weight: 600; }
+    .q-btn.blank.active { background: #FFF4E0; border-color: var(--warning); color: #B26A00; font-weight: 600; }
+    .q-extra { display: none; margin-top: 6px; padding-left: 38px; }
+    .q-extra.show { display: block; }
+    .q-extra-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 6px; }
+    .q-extra-row .tag {
+      padding: 3px 10px; border-radius: 12px; font-size: 12px;
+      border: 1px solid var(--border); background: white; cursor: pointer;
+    }
+    .q-extra-row .tag.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .q-extra-row .label { font-size: 12px; color: var(--text-secondary); margin-right: 2px; }
+    .q-detail-input {
+      width: 100%; padding: 6px 10px; border: 1px solid var(--border);
+      border-radius: 6px; font-size: 13px;
+    }
+    .stat-bar {
+      display: flex; gap: 16px; justify-content: center;
+      padding: 12px; background: var(--bg); border-radius: 8px;
+      margin: 12px 0; font-size: 14px;
+    }
+    .stat-bar .s-ok { color: var(--success); font-weight: 600; }
+    .stat-bar .s-wrong { color: var(--danger); font-weight: 600; }
+    .stat-bar .s-blank { color: var(--warning); font-weight: 600; }
+
+    .toast {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      background: #1D1D1F; color: white; padding: 10px 20px;
+      border-radius: 20px; font-size: 14px; z-index: 999;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .toast.show { opacity: 1; }
+
+    /* 拍照页 */
+    .camera-area {
+      border: 2px dashed var(--border);
+      border-radius: 16px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .camera-area:active { border-color: var(--primary); }
+    .camera-icon { font-size: 56px; display: block; margin-bottom: 12px; }
+    .camera-hint { font-size: 14px; color: var(--text-secondary); margin-top: 8px; }
+    .upload-progress {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+    .upload-progress .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    .photo-preview {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+    /* 举一反三练习卡 */
+    .practice-card {
+      background: #F0F4FF;
+      border-left: 3px solid var(--primary);
+      border-radius: 8px;
+      padding: 12px;
+      margin: 8px 0;
+    }
+    .practice-q { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+    .practice-a { font-size: 14px; color: var(--success); margin-bottom: 2px; }
+    .practice-e { font-size: 12px; color: var(--text-secondary); }
+    .practice-tag {
+      display: inline-block; font-size: 11px; padding: 2px 8px;
+      border-radius: 10px; background: var(--primary); color: white;
+      margin-bottom: 6px;
+    }
+
+    @media (max-width: 380px) {
+      .card { margin: 8px 10px; padding: 12px; }
+      .metric-value { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>学迹分析</h1>
+    <p id="header-subtitle">学业轨迹智能分析</p>
+  </header>
+
+  <div id="page-home" class="page">
+    <div id="home-content"></div>
+  </div>
+
+  <div id="page-report" class="page">
+    <div style="padding: 12px 16px;">
+      <button class="btn btn-secondary" onclick="showPage('home')">← 返回</button>
+    </div>
+    <div id="report-content"></div>
+  </div>
+
+  <div id="page-add" class="page">
+    <div id="add-content"></div>
+  </div>
+
+  <div id="page-camera" class="page active">
+    <div id="camera-content"></div>
+  </div>
+
+  <div id="page-history" class="page">
+    <div class="card">
+      <div class="card-title">📅 历史报告</div>
+      <div id="history-list"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <nav class="tab-bar">
+    <div class="tab-item active" onclick="showPage('camera')">
+      <span class="tab-icon">📷</span>拍照
+    </div>
+    <div class="tab-item" onclick="showPage('home')">
+      <span class="tab-icon">📊</span>报告
+    </div>
+    <div class="tab-item" onclick="showPage('history')">
+      <span class="tab-icon">📅</span>历史
+    </div>
+    <div class="tab-item" onclick="showPage('add')">
+      <span class="tab-icon">✍️</span>手填
+    </div>
+  </nav>
+
+  <script>
+    const API = '/api/v1';
+    // 默认学生（后续可加学生选择）
+    const DEFAULT_STUDENT = 'student_001';
+    const DEFAULT_SUBJECT = 'math';
+
+    const ERROR_TYPES = [
+      { v: 'careless', label: '粗心' },
+      { v: 'concept', label: '概念' },
+      { v: 'calculation', label: '计算' },
+      { v: 'method', label: '方法' },
+      { v: 'reading', label: '审题' },
+    ];
+    const DIFFICULTIES = [
+      { v: 'easy', label: '易' },
+      { v: 'medium', label: '中' },
+      { v: 'hard', label: '难' },
+    ];
+    const TYPE_CN = { careless: '粗心/习惯', concept: '概念不清', calculation: '计算失误', method: '方法错误', reading: '审题错误' };
+
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2000);
+    }
+
+    function showPage(name) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + name).classList.add('active');
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      const idx = { camera: 0, home: 1, history: 2, add: 3 }[name];
+      if (idx !== undefined) document.querySelectorAll('.tab-item')[idx].classList.add('active');
+      if (name === 'camera') loadCamera();
+      if (name === 'home') loadHome();
+      if (name === 'add') loadAddForm();
+      if (name === 'history') loadHistory();
+    }
+
+    // ---------- 拍照页 ----------
+    function loadCamera() {
+      const el = document.getElementById('camera-content');
+      el.innerHTML = `
+        <div class="card">
+          <div class="card-title">📷 拍照上传作业</div>
+          <div class="form-group">
+            <label class="form-label">学科</label>
+            <select class="form-select" id="cam-subject">
+              <option value="math">数学</option>
+              <option value="english">英语</option>
+              <option value="chinese">语文</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">年级</label>
+            <select class="form-select" id="cam-grade">
+              <option value="3">三年级</option>
+              <option value="4" selected>四年级</option>
+              <option value="5">五年级</option>
+              <option value="6">六年级</option>
+              <option value="7">初一</option>
+              <option value="8">初二</option>
+              <option value="9">初三</option>
+            </select>
+          </div>
+          <input type="file" id="cam-input" accept="image/*" capture="environment" style="display:none" onchange="onPhotoSelected(event)">
+          <div class="camera-area" onclick="document.getElementById('cam-input').click()">
+            <span class="camera-icon">📸</span>
+            <div style="font-size:16px;font-weight:600;">点击拍照或选择照片</div>
+            <div class="camera-hint">拍清楚题目和作答，AI 自动批改分析</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function onPhotoSelected(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      uploadPhoto(file);
+    }
+
+    async function uploadPhoto(file) {
+      const el = document.getElementById('camera-content');
+      const subject = document.getElementById('cam-subject').value;
+      const grade = parseInt(document.getElementById('cam-grade').value);
+
+      // 预览图 + loading
+      const previewUrl = URL.createObjectURL(file);
+      el.innerHTML = `
+        <div class="card">
+          <img class="photo-preview" src="${previewUrl}">
+          <div class="upload-progress">
+            <div class="spinner"></div>
+            <div style="font-weight:600;margin-bottom:4px;">AI 正在识别和分析...</div>
+            <div style="font-size:13px;">识别题目 → 判定对错 → 生成报告和练习题</div>
+            <div style="font-size:12px;margin-top:8px;color:var(--text-secondary);">约需 20-30 秒，请稍候</div>
+          </div>
+        </div>
+      `;
+
+      const fd = new FormData();
+      fd.append('student_id', DEFAULT_STUDENT);
+      fd.append('subject', subject);
+      fd.append('grade', grade);
+      fd.append('image', file);
+
+      try {
+        const res = await fetch(`${API}/homework/upload`, { method: 'POST', body: fd });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || 'HTTP ' + res.status);
+        }
+        const data = await res.json();
+        renderPhotoResult(data, previewUrl);
+      } catch (e) {
+        el.innerHTML = `
+          <div class="card">
+            <div class="error-state">❌ 分析失败：${e.message}</div>
+            <button class="btn btn-primary" onclick="loadCamera()" style="margin-top:16px;">重新拍照</button>
+          </div>
+        `;
+      }
+    }
+
+    function renderPhotoResult(data, previewUrl) {
+      const el = document.getElementById('camera-content');
+      const hw = data.homework;
+      const accPct = (hw.accuracy * 100).toFixed(0);
+      const accCls = accPct >= 70 ? 'good' : accPct >= 50 ? 'mid' : 'bad';
+      const practices = data.practices || [];
+
+      // 按原题分组练习题
+      const practicesByQ = {};
+      practices.forEach(p => {
+        const k = p.original_q_num;
+        if (!practicesByQ[k]) practicesByQ[k] = [];
+        practicesByQ[k].push(p);
+      });
+
+      el.innerHTML = `
+        <div class="card">
+          <img class="photo-preview" src="${previewUrl}">
+          <div class="card-title">✅ 分析完成</div>
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-value ${accCls}">${accPct}%</div>
+              <div class="metric-label">正确率</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value">${hw.total_questions}</div>
+              <div class="metric-label">总题数</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value">${hw.correct_count}</div>
+              <div class="metric-label">做对</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value" style="color:var(--danger)">${hw.wrong_count}</div>
+              <div class="metric-label">做错</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🧠 掌握度</div>
+          <div class="mastery-list">
+            ${Object.entries(data.mastery || {}).map(([k,v]) => {
+              const cn = TYPE_CN[k] || k;
+              const lvl = v.mastery >= 0.7 ? 'good' : v.mastery >= 0.5 ? 'mid' : 'bad';
+              return '<div class="mastery-item"><span class="dot ' + lvl + '"></span> ' + cn + ' ' + (v.mastery*100).toFixed(0) + '%</div>';
+            }).join('')}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">💡 学习建议</div>
+          ${(data.report_sections && data.report_sections[4] ? data.report_sections[4].items : []).map(s => {
+            const color = s.severity === 'high' ? 'var(--danger)' : 'var(--warning)';
+            return '<div class="suggestion"><div style="font-weight:500;margin-bottom:2px;"><span style="color:' + color + '">●</span> ' + s.problem + '</div><div style="font-size:13px;color:var(--text-secondary);">' + s.suggestion + '</div></div>';
+          }).join('') || '<div class="empty-state">暂无建议</div>'}
+        </div>
+
+        ${practices.length > 0 ? `
+          <div class="card">
+            <div class="card-title">✏️ 举一反三（${practices.length} 道练习）</div>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">针对错题生成的同类练习，巩固薄弱点</p>
+            ${Object.entries(practicesByQ).map(([qnum, items]) => `
+              <div style="margin-bottom:16px;">
+                <div style="font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">原题 ${qnum} 的变式练习：</div>
+                ${items.map((p, i) => `
+                  <div class="practice-card">
+                    <span class="practice-tag">${p.error_type} · ${p.difficulty}</span>
+                    <div class="practice-q">${i+1}. ${p.question}</div>
+                    <div class="practice-a">答案：${p.answer}</div>
+                    <div class="practice-e">${p.explanation}</div>
+                  </div>
+                `).join('')}
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+
+        <div class="card">
+          <div class="card-title">📋 规则结论</div>
+          ${(data.rules || []).map(r => {
+            const icon = r.confidence === 'high' ? '🟢' : r.confidence === 'medium' ? '🟡' : '⚪';
+            return '<div class="rule-item"><span class="rule-icon">' + icon + '</span><span>[' + r.rule_id + '] ' + r.message + '</span></div>';
+          }).join('') || '<div class="empty-state">暂无规则触发</div>'}
+        </div>
+
+        <div class="card" style="text-align:center;">
+          <button class="btn btn-primary" onclick="showFullReport(data.report_text)" style="width:auto;padding:12px 32px;">查看完整报告 📄</button>
+        </div>
+
+        <div class="card" style="text-align:center;">
+          <button class="btn btn-secondary" onclick="loadCamera()" style="width:auto;padding:10px 24px;">📷 再拍一次</button>
+        </div>
+      `;
+      // 缓存报告文本
+      window._reportData = { report_text: data.report_text };
+    }
+
+    // ---------- 首页 ----------
+    async function loadHome() {
+      const el = document.getElementById('home-content');
+      el.innerHTML = '<div class="loading"><div class="spinner"></div>正在分析...</div>';
+      try {
+        const res = await fetch(`${API}/analyze?student_id=${DEFAULT_STUDENT}&subject=${DEFAULT_SUBJECT}`);
+        if (res.status === 400) {
+          el.innerHTML = `<div class="empty-state">📝 还没有足够的作业数据<br><br>请到「拍照」页再拍一次作业（至少 2 次才能分析趋势）</div>`;
+          return;
+        }
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        renderHome(await res.json());
+      } catch (e) {
+        el.innerHTML = '<div class="error-state">❌ 加载失败：' + e.message + '</div>';
+      }
+    }
+
+    function renderHome(data) {
+      const trendIcon = data.trend.includes('improving') ? '📈' : data.trend.includes('declining') ? '📉' : '📊';
+      const trendCN = data.trend.includes('improving') ? '上升 ↑' : data.trend.includes('declining') ? '下降 ↓' : '平稳 →';
+      const accPct = (data.current_accuracy * 100).toFixed(1);
+      const movPct = data.moving_avg ? (data.moving_avg * 100).toFixed(1) : '--';
+      const weekLabel = data.week ? `第${data.week}周` : '本周';
+
+      let mastered = 0, weak = 0;
+      const masteryList = [];
+      for (const [k, v] of Object.entries(data.mastery)) {
+        const pct = (v.mastery * 100).toFixed(1);
+        const level = v.mastery >= 0.7 ? 'good' : v.mastery >= 0.5 ? 'mid' : 'bad';
+        if (v.mastery >= 0.7) mastered++;
+        else if (v.mastery < 0.5) weak++;
+        masteryList.push({ name: TYPE_CN[k] || k, pct: pct, level: level });
+      }
+
+      document.getElementById('home-content').innerHTML = `
+        <div class="card">
+          <div class="card-title">📊 ${weekLabel}概览</div>
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-value ${accPct >= 70 ? 'good' : accPct >= 50 ? 'mid' : 'bad'}">${accPct}%</div>
+              <div class="metric-label">正确率</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value">${movPct}%</div>
+              <div class="metric-label">移动平均</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value">${trendIcon} ${trendCN}</div>
+              <div class="metric-label">趋势</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value">${data.homework_count}</div>
+              <div class="metric-label">作业次数</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🧠 掌握度
+            <span style="font-size:13px;color:var(--text-secondary);font-weight:400;"> 已掌握 ${mastered}/5 · 薄弱 ${weak}/5</span>
+          </div>
+          <div class="mastery-list">
+            ${masteryList.map(m => '<div class="mastery-item"><span class="dot ' + m.level + '"></span> ' + m.name + ' ' + m.pct + '%</div>').join('')}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🐛 错误分析</div>
+          <div id="error-list">
+            ${(data.report_sections && data.report_sections[2] ? data.report_sections[2].items : []).map(e => {
+              const trendCls = e.trend === '改善中' ? 'trend-up' : e.trend === '恶化中' ? 'trend-down' : 'trend-flat';
+              return '<div class="error-row"><span class="error-name">' + e.error_type + '</span><span><span class="error-count">本周 ' + e.this_week + ' 次</span> <span class="error-trend ' + trendCls + '">' + e.trend + '</span></span></div>';
+            }).join('') || '<div class="empty-state">暂无错误数据</div>'}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📋 规则结论</div>
+          <div id="rules-list">
+            ${(data.rules || []).map(r => {
+              const icon = r.confidence === 'high' ? '🟢' : r.confidence === 'medium' ? '🟡' : '⚪';
+              return '<div class="rule-item"><span class="rule-icon">' + icon + '</span><span>[' + r.rule_id + '] ' + r.message + '</span></div>';
+            }).join('') || '<div class="empty-state">暂无规则触发</div>'}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">💡 学习建议</div>
+          <div id="suggestions-content">
+            ${(data.report_sections && data.report_sections[4] ? data.report_sections[4].items : []).map(s => {
+              const color = s.severity === 'high' ? 'var(--danger)' : 'var(--warning)';
+              return '<div class="suggestion"><div style="font-weight:500;margin-bottom:2px;"><span style="color:' + color + '">●</span> ' + s.problem + '</div><div style="font-size:13px;color:var(--text-secondary);">' + s.suggestion + '</div></div>';
+            }).join('') || '<div class="empty-state">暂无建议</div>'}
+          </div>
+        </div>
+
+        <div class="card" style="text-align:center;">
+          <button class="btn btn-primary" onclick="showFullReport()" style="width:auto;padding:12px 32px;">查看完整报告 📄</button>
+        </div>
+      `;
+      window._reportData = data;
+    }
+
+    function showFullReport(reportText) {
+      const text = reportText || (window._reportData && window._reportData.report_text);
+      if (!text) return;
+      document.getElementById('report-content').innerHTML = '<div class="card"><pre style="font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;font-family:inherit;">' + text + '</pre></div>';
+      showPage('report');
+    }
+
+    // ---------- 录入页 ----------
+    function loadAddForm() {
+      const today = new Date().toISOString().slice(0, 10);
+      document.getElementById('add-content').innerHTML = `
+        <div class="card">
+          <div class="card-title">📝 录入作业（逐题）</div>
+          <div class="form-group">
+            <label class="form-label">日期</label>
+            <input class="form-input" type="date" id="hw-date" value="${today}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">学科</label>
+            <select class="form-select" id="hw-subject">
+              <option value="math">数学</option>
+              <option value="english">英语</option>
+              <option value="chinese">语文</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">年级</label>
+            <select class="form-select" id="hw-grade">
+              <option value="3">三年级</option>
+              <option value="4" selected>四年级</option>
+              <option value="5">五年级</option>
+              <option value="6">六年级</option>
+              <option value="7">初一</option>
+              <option value="8">初二</option>
+              <option value="9">初三</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">总题数</label>
+            <input class="form-input" type="number" id="hw-total" value="10" min="1" max="50">
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="buildQuestionList()" style="width:auto;margin-bottom:16px;">生成题目列表</button>
+        </div>
+
+        <div class="card" id="questions-card" style="display:none;">
+          <div class="card-title">逐题标记</div>
+          <div id="questions-list"></div>
+          <div class="stat-bar" id="stat-bar">
+            <span>正确 <span class="s-ok" id="cnt-ok">0</span></span>
+            <span>错误 <span class="s-wrong" id="cnt-wrong">0</span></span>
+            <span>空题 <span class="s-blank" id="cnt-blank">0</span></span>
+          </div>
+          <button class="btn btn-primary" onclick="submitHomework()">提交作业</button>
+        </div>
+      `;
+      buildQuestionList();
+    }
+
+    function buildQuestionList() {
+      const total = parseInt(document.getElementById('hw-total').value) || 0;
+      if (total < 1 || total > 50) { toast('总题数需在 1-50'); return; }
+      const card = document.getElementById('questions-card');
+      const list = document.getElementById('questions-list');
+      card.style.display = 'block';
+      list.innerHTML = '';
+      for (let i = 1; i <= total; i++) {
+        list.appendChild(makeQuestionRow(i));
+      }
+      updateStats();
+    }
+
+    function makeQuestionRow(num) {
+      const row = document.createElement('div');
+      row.innerHTML = `
+        <div class="q-row">
+          <div class="q-num">${num}</div>
+          <div class="q-buttons">
+            <button class="q-btn ok" data-state="ok" onclick="setQ(this,${num},'ok')">✓ 对</button>
+            <button class="q-btn wrong" data-state="wrong" onclick="setQ(this,${num},'wrong')">✗ 错</button>
+            <button class="q-btn blank" data-state="blank" onclick="setQ(this,${num},'blank')">— 空</button>
+          </div>
+        </div>
+        <div class="q-extra" id="qextra-${num}"></div>
+      `;
+      row.dataset.qnum = num;
+      row.dataset.state = '';
+      return row;
+    }
+
+    function setQ(btn, num, state) {
+      const row = btn.closest('[data-qnum]');
+      row.dataset.state = state;
+      // 按钮高亮
+      row.querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // 展开额外选项
+      const extra = document.getElementById('qextra-' + num);
+      if (state === 'ok') {
+        extra.classList.remove('show');
+        extra.innerHTML = '';
+      } else if (state === 'wrong') {
+        extra.classList.add('show');
+        extra.innerHTML = `
+          <div class="q-extra-row">
+            <span class="label">错误类型:</span>
+            ${ERROR_TYPES.map(e => `<span class="tag" data-etype="${e.v}" onclick="pickTag(this,'etype')">${e.label}</span>`).join('')}
+          </div>
+          <div class="q-extra-row">
+            <span class="label">难度:</span>
+            ${DIFFICULTIES.map(d => `<span class="tag" data-diff="${d.v}" onclick="pickTag(this,'diff')">${d.label}</span>`).join('')}
+          </div>
+          <input class="q-detail-input" placeholder="错误说明（可选）" data-detail>
+        `;
+        // 默认选中"计算"+"中"
+        extra.querySelector('[data-etype="calculation"]').classList.add('active');
+        extra.querySelector('[data-diff="medium"]').classList.add('active');
+      } else if (state === 'blank') {
+        extra.classList.add('show');
+        extra.innerHTML = `
+          <div class="q-extra-row">
+            <span class="label">难度:</span>
+            ${DIFFICULTIES.map(d => `<span class="tag" data-diff="${d.v}" onclick="pickTag(this,'diff')">${d.label}</span>`).join('')}
+          </div>
+        `;
+        extra.querySelector('[data-diff="hard"]').classList.add('active');
+      }
+      updateStats();
+    }
+
+    function pickTag(tag, kind) {
+      const row = tag.closest('.q-extra');
+      const attr = kind === 'etype' ? 'data-etype' : 'data-diff';
+      row.querySelectorAll(`[${attr}]`).forEach(t => t.classList.remove('active'));
+      tag.classList.add('active');
+    }
+
+    function updateStats() {
+      let ok = 0, wrong = 0, blank = 0;
+      document.querySelectorAll('[data-qnum]').forEach(row => {
+        const s = row.dataset.state;
+        if (s === 'ok') ok++;
+        else if (s === 'wrong') wrong++;
+        else if (s === 'blank') blank++;
+      });
+      document.getElementById('cnt-ok').textContent = ok;
+      document.getElementById('cnt-wrong').textContent = wrong;
+      document.getElementById('cnt-blank').textContent = blank;
+    }
+
+    async function submitHomework() {
+      const rows = document.querySelectorAll('[data-qnum]');
+      const total = parseInt(document.getElementById('hw-total').value);
+      const questions = [];
+      let valid = true;
+      let errMsg = '';
+
+      rows.forEach(row => {
+        const num = parseInt(row.dataset.qnum);
+        const state = row.dataset.state;
+        const extra = document.getElementById('qextra-' + num);
+        if (!state) { valid = false; errMsg = `第${num}题未标记`; return; }
+
+        let q = { q_num: num, type: 'calculation', correct: null, difficulty: 'medium' };
+        if (state === 'ok') {
+          q.correct = true;
+          q.difficulty = extra.querySelector('[data-diff].active')?.dataset.diff || 'medium';
+        } else if (state === 'wrong') {
+          q.correct = false;
+          q.error_type = extra.querySelector('[data-etype].active')?.dataset.etype || 'calculation';
+          q.difficulty = extra.querySelector('[data-diff].active')?.dataset.diff || 'medium';
+          const det = extra.querySelector('[data-detail]');
+          if (det && det.value.trim()) q.error_detail = det.value.trim();
+        } else if (state === 'blank') {
+          q.correct = null;
+          q.difficulty = extra.querySelector('[data-diff].active')?.dataset.diff || 'hard';
+        }
+        questions.push(q);
+      });
+
+      if (!valid) { toast(errMsg); return; }
+
+      const payload = {
+        student_id: DEFAULT_STUDENT,
+        date: document.getElementById('hw-date').value,
+        subject: document.getElementById('hw-subject').value,
+        grade: parseInt(document.getElementById('hw-grade').value),
+        total_questions: total,
+        questions: questions,
+      };
+
+      const btn = event.target;
+      btn.textContent = '提交中...'; btn.disabled = true;
+      try {
+        const res = await fetch(`${API}/homework`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || 'HTTP ' + res.status);
+        }
+        const data = await res.json();
+        toast(`✅ 已录入（正确率 ${(data.accuracy * 100).toFixed(0)}%）`);
+        setTimeout(() => showPage('home'), 1200);
+      } catch (e) {
+        toast('❌ ' + e.message);
+        btn.textContent = '提交作业'; btn.disabled = false;
+      }
+    }
+
+    // ---------- 历史页 ----------
+    async function loadHistory() {
+      const el = document.getElementById('history-list');
+      el.innerHTML = '<div class="loading"><div class="spinner"></div>加载中...</div>';
+      try {
+        const res = await fetch(`${API}/report/history?student_id=${DEFAULT_STUDENT}&limit=20`);
+        const data = await res.json();
+        if (!data.total) {
+          el.innerHTML = '<div class="empty-state">暂无历史报告<br>录入作业并生成报告后会显示在这里</div>';
+          return;
+        }
+        el.innerHTML = data.reports.map(r => {
+          const overview = (r.report?.sections || []).find(s => s.title.includes('概览'));
+          const accStr = overview?.metrics?.['当前正确率'] || '';
+          return `<div class="history-item" onclick='showReport(${JSON.stringify(r).replace(/'/g, "&#39;")})'>
+            <div>
+              <div class="history-week">第${r.week || '?'}周</div>
+              <div class="history-date">${r.date_range || r.generated_at.slice(0,10)}${accStr ? ' · 正确率 ' + accStr : ''}</div>
+            </div>
+            <span class="history-arrow">›</span>
+          </div>`;
+        }).join('');
+      } catch (e) {
+        el.innerHTML = '<div class="error-state">❌ 加载失败：' + e.message + '</div>';
+      }
+    }
+
+    function showReport(reportRow) {
+      showFullReport(reportRow.report_text);
+    }
+
+    loadCamera();
+  </script>
+</body>
+</html>

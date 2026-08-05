@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# 数据库
+data/*.db
+data/*.db-journal
+
+# 上传的图片
+data/uploads/
+data/test_*.png
+
+# 环境变量（含 API key，绝不进 git）
+.env
+
+# Android 构建产物
+apk/.gradle/
+apk/build/
+apk/app/build/
+apk/local.properties
+
+# IDE
+.vscode/
+.idea/
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log

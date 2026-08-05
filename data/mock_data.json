@@ -1,0 +1,3104 @@
+{
+  "meta": {
+    "description": "学业量化分析引擎 — 模拟数据集",
+    "student_id": "student_001",
+    "subject": "math",
+    "grade": 4,
+    "weeks": 4,
+    "homeworks_per_week": 5,
+    "total_homeworks": 20,
+    "generated_by": "scripts/generate_mock_data.py"
+  },
+  "homeworks": [
+    {
+      "student_id": "student_001",
+      "date": "2026-03-01",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w01_00",
+      "total_questions": 15,
+      "correct_count": 9,
+      "wrong_count": 6,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "calculation",
+          "error_detail": "分数通分错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "calculation",
+          "error_detail": "加法进位错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "concept",
+          "error_detail": "单位换算错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 11,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "concept",
+          "error_detail": "概念理解偏差",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 12,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 13,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 14,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "calculation",
+          "error_detail": "乘法口诀错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 15,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "reading",
+          "error_detail": "漏看条件",
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.6,
+        "completion": 1.0,
+        "hard_correct_rate": 1.0,
+        "error_type_distribution": {
+          "careless": 0,
+          "concept": 2,
+          "calculation": 3,
+          "method": 0,
+          "reading": 1
+        }
+      },
+      "week": 1
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-02",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w01_01",
+      "total_questions": 14,
+      "correct_count": 7,
+      "wrong_count": 7,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "method",
+          "error_detail": "列式错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "careless",
+          "error_detail": "抄错数字",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "choice",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "careless",
+          "error_detail": "忘记写答案",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "concept",
+          "error_detail": "概念理解偏差",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "calculation",
+          "error_detail": "分数通分错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "calculation",
+          "error_detail": "加法进位错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 11,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 12,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "reading",
+          "error_detail": "漏看条件",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 13,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 14,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.5,
+        "completion": 1.0,
+        "hard_correct_rate": 0.3333,
+        "error_type_distribution": {
+          "careless": 2,
+          "concept": 1,
+          "calculation": 2,
+          "method": 1,
+          "reading": 1
+        }
+      },
+      "week": 1
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-03",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w01_02",
+      "total_questions": 13,
+      "correct_count": 6,
+      "wrong_count": 7,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "reading",
+          "error_detail": "审题不清",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "method",
+          "error_detail": "解题思路错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "careless",
+          "error_detail": "进位错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "calculation",
+          "error_detail": "减借位错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "calculation",
+          "error_detail": "计算步骤遗漏",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 11,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 12,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "concept",
+          "error_detail": "概念理解偏差",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 13,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "careless",
+          "error_detail": "进位错误",
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.4615,
+        "completion": 1.0,
+        "hard_correct_rate": 0.6667,
+        "error_type_distribution": {
+          "careless": 2,
+          "concept": 1,
+          "calculation": 2,
+          "method": 1,
+          "reading": 1
+        }
+      },
+      "week": 1
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-04",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w01_03",
+      "total_questions": 10,
+      "correct_count": 5,
+      "wrong_count": 5,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "calculation",
+          "error_detail": "除法试商错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "method",
+          "error_detail": "分类讨论遗漏",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "careless",
+          "error_detail": "忘记写答案",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "reading",
+          "error_detail": "漏看条件",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "careless",
+          "error_detail": "抄错数字",
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.5,
+        "completion": 1.0,
+        "hard_correct_rate": 0.25,
+        "error_type_distribution": {
+          "careless": 2,
+          "concept": 0,
+          "calculation": 1,
+          "method": 1,
+          "reading": 1
+        }
+      },
+      "week": 1
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-05",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w01_04",
+      "total_questions": 10,
+      "correct_count": 5,
+      "wrong_count": 5,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "concept",
+          "error_detail": "定义混淆",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "reading",
+          "error_detail": "问题要求看反了",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "choice",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "calculation",
+          "error_detail": "加法进位错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "calculation",
+          "error_detail": "加法进位错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "concept",
+          "error_detail": "单位换算错误",
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.5,
+        "completion": 1.0,
+        "hard_correct_rate": 0.5,
+        "error_type_distribution": {
+          "careless": 0,
+          "concept": 2,
+          "calculation": 2,
+          "method": 0,
+          "reading": 1
+        }
+      },
+      "week": 1
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-08",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w02_00",
+      "total_questions": 10,
+      "correct_count": 7,
+      "wrong_count": 3,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "careless",
+          "error_detail": "忘记写答案",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "concept",
+          "error_detail": "数量关系理解错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "choice",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "concept",
+          "error_detail": "公式记混",
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.7,
+        "completion": 1.0,
+        "hard_correct_rate": 0.0,
+        "error_type_distribution": {
+          "careless": 1,
+          "concept": 2,
+          "calculation": 0,
+          "method": 0,
+          "reading": 0
+        }
+      },
+      "week": 2
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-09",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w02_01",
+      "total_questions": 15,
+      "correct_count": 9,
+      "wrong_count": 6,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "method",
+          "error_detail": "解题思路错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "careless",
+          "error_detail": "忘记写答案",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "calculation",
+          "error_detail": "乘法口诀错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "reading",
+          "error_detail": "理解错题意",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 11,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 12,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "calculation",
+          "error_detail": "减借位错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 13,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 14,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "concept",
+          "error_detail": "概念理解偏差",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 15,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.6,
+        "completion": 1.0,
+        "hard_correct_rate": 0.4,
+        "error_type_distribution": {
+          "careless": 1,
+          "concept": 1,
+          "calculation": 2,
+          "method": 1,
+          "reading": 1
+        }
+      },
+      "week": 2
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-10",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w02_02",
+      "total_questions": 10,
+      "correct_count": 6,
+      "wrong_count": 4,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "fill_blank",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "concept",
+          "error_detail": "定理适用错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "concept",
+          "error_detail": "公式记混",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "calculation",
+          "error_detail": "乘法口诀错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "reading",
+          "error_detail": "问题要求看反了",
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.6,
+        "completion": 1.0,
+        "hard_correct_rate": 1.0,
+        "error_type_distribution": {
+          "careless": 0,
+          "concept": 2,
+          "calculation": 1,
+          "method": 0,
+          "reading": 1
+        }
+      },
+      "week": 2
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-11",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w02_03",
+      "total_questions": 15,
+      "correct_count": 10,
+      "wrong_count": 5,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "calculation",
+          "error_detail": "计算步骤遗漏",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "choice",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "calculation",
+          "error_detail": "乘法口诀错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "concept",
+          "error_detail": "数量关系理解错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 11,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "method",
+          "error_detail": "分类讨论遗漏",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 12,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 13,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "reading",
+          "error_detail": "忽略关键信息",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 14,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 15,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.6667,
+        "completion": 1.0,
+        "hard_correct_rate": 0.5,
+        "error_type_distribution": {
+          "careless": 0,
+          "concept": 1,
+          "calculation": 2,
+          "method": 1,
+          "reading": 1
+        }
+      },
+      "week": 2
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-12",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w02_04",
+      "total_questions": 15,
+      "correct_count": 8,
+      "wrong_count": 7,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "reading",
+          "error_detail": "忽略关键信息",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "concept",
+          "error_detail": "单位换算错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "fill_blank",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "calculation",
+          "error_detail": "除法试商错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "fill_blank",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "calculation",
+          "error_detail": "除法试商错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "careless",
+          "error_detail": "忘记写答案",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 11,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 12,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 13,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "concept",
+          "error_detail": "数量关系理解错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 14,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "careless",
+          "error_detail": "看错运算符",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 15,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.5333,
+        "completion": 1.0,
+        "hard_correct_rate": 0.25,
+        "error_type_distribution": {
+          "careless": 2,
+          "concept": 2,
+          "calculation": 2,
+          "method": 0,
+          "reading": 1
+        }
+      },
+      "week": 2
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-15",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w03_00",
+      "total_questions": 13,
+      "correct_count": 9,
+      "wrong_count": 4,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "reading",
+          "error_detail": "忽略关键信息",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "fill_blank",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "calculation",
+          "error_detail": "乘法口诀错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "fill_blank",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "careless",
+          "error_detail": "看错运算符",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 11,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "calculation",
+          "error_detail": "加法进位错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 12,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 13,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.6923,
+        "completion": 1.0,
+        "hard_correct_rate": 0.0,
+        "error_type_distribution": {
+          "careless": 1,
+          "concept": 0,
+          "calculation": 2,
+          "method": 0,
+          "reading": 1
+        }
+      },
+      "week": 3
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-16",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w03_01",
+      "total_questions": 14,
+      "correct_count": 10,
+      "wrong_count": 4,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "calculation",
+          "error_detail": "减借位错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "careless",
+          "error_detail": "进位错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "reading",
+          "error_detail": "漏看条件",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 11,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 12,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 13,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "calculation",
+          "error_detail": "计算步骤遗漏",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 14,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.7143,
+        "completion": 1.0,
+        "hard_correct_rate": 0.0,
+        "error_type_distribution": {
+          "careless": 1,
+          "concept": 0,
+          "calculation": 2,
+          "method": 0,
+          "reading": 1
+        }
+      },
+      "week": 3
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-17",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w03_02",
+      "total_questions": 10,
+      "correct_count": 7,
+      "wrong_count": 3,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "calculation",
+          "error_detail": "计算步骤遗漏",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "careless",
+          "error_detail": "进位错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "reading",
+          "error_detail": "审题不清",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.7,
+        "completion": 1.0,
+        "hard_correct_rate": 0.0,
+        "error_type_distribution": {
+          "careless": 1,
+          "concept": 0,
+          "calculation": 1,
+          "method": 0,
+          "reading": 1
+        }
+      },
+      "week": 3
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-18",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w03_03",
+      "total_questions": 15,
+      "correct_count": 10,
+      "wrong_count": 5,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "fill_blank",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "reading",
+          "error_detail": "理解错题意",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "calculation",
+          "error_detail": "计算步骤遗漏",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "choice",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "careless",
+          "error_detail": "抄错数字",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "calculation",
+          "error_detail": "加法进位错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 11,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 12,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 13,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 14,
+          "type": "fill_blank",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "concept",
+          "error_detail": "单位换算错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 15,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.6667,
+        "completion": 1.0,
+        "hard_correct_rate": 1.0,
+        "error_type_distribution": {
+          "careless": 1,
+          "concept": 1,
+          "calculation": 2,
+          "method": 0,
+          "reading": 1
+        }
+      },
+      "week": 3
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-19",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w03_04",
+      "total_questions": 14,
+      "correct_count": 10,
+      "wrong_count": 4,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "careless",
+          "error_detail": "进位错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "calculation",
+          "error_detail": "减借位错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "reading",
+          "error_detail": "漏看条件",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 11,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 12,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 13,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 14,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "calculation",
+          "error_detail": "加法进位错",
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.7143,
+        "completion": 1.0,
+        "hard_correct_rate": 0.6667,
+        "error_type_distribution": {
+          "careless": 1,
+          "concept": 0,
+          "calculation": 2,
+          "method": 0,
+          "reading": 1
+        }
+      },
+      "week": 3
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-22",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w04_00",
+      "total_questions": 10,
+      "correct_count": 7,
+      "wrong_count": 3,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "concept",
+          "error_detail": "公式记混",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "calculation",
+          "error_detail": "分数通分错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "concept",
+          "error_detail": "公式记混",
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.7,
+        "completion": 1.0,
+        "hard_correct_rate": 1.0,
+        "error_type_distribution": {
+          "careless": 0,
+          "concept": 2,
+          "calculation": 1,
+          "method": 0,
+          "reading": 0
+        }
+      },
+      "week": 4
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-23",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w04_01",
+      "total_questions": 15,
+      "correct_count": 11,
+      "wrong_count": 4,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "concept",
+          "error_detail": "公式记混",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "concept",
+          "error_detail": "公式记混",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "careless",
+          "error_detail": "小数点错位",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 11,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 12,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "calculation",
+          "error_detail": "分数通分错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 13,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 14,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 15,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.7333,
+        "completion": 1.0,
+        "hard_correct_rate": 0.0,
+        "error_type_distribution": {
+          "careless": 1,
+          "concept": 2,
+          "calculation": 1,
+          "method": 0,
+          "reading": 0
+        }
+      },
+      "week": 4
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-24",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w04_02",
+      "total_questions": 12,
+      "correct_count": 9,
+      "wrong_count": 3,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "fill_blank",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "careless",
+          "error_detail": "看错运算符",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "concept",
+          "error_detail": "数量关系理解错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "choice",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 11,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 12,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "calculation",
+          "error_detail": "除法试商错",
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.75,
+        "completion": 1.0,
+        "hard_correct_rate": 0.3333,
+        "error_type_distribution": {
+          "careless": 1,
+          "concept": 1,
+          "calculation": 1,
+          "method": 0,
+          "reading": 0
+        }
+      },
+      "week": 4
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-25",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w04_03",
+      "total_questions": 14,
+      "correct_count": 12,
+      "wrong_count": 2,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "choice",
+          "correct": false,
+          "difficulty": "hard",
+          "error_type": "concept",
+          "error_detail": "公式记混",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 11,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 12,
+          "type": "word_problem",
+          "correct": false,
+          "difficulty": "easy",
+          "error_type": "calculation",
+          "error_detail": "乘法口诀错",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 13,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 14,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.8571,
+        "completion": 1.0,
+        "hard_correct_rate": 0.0,
+        "error_type_distribution": {
+          "careless": 0,
+          "concept": 1,
+          "calculation": 1,
+          "method": 0,
+          "reading": 0
+        }
+      },
+      "week": 4
+    },
+    {
+      "student_id": "student_001",
+      "date": "2026-03-26",
+      "subject": "math",
+      "grade": 4,
+      "homework_id": "hw_w04_04",
+      "total_questions": 13,
+      "correct_count": 10,
+      "wrong_count": 3,
+      "blank_count": 0,
+      "questions": [
+        {
+          "q_num": 1,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 2,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 3,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 4,
+          "type": "fill_blank",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "calculation",
+          "error_detail": "计算步骤遗漏",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 5,
+          "type": "word_problem",
+          "correct": true,
+          "difficulty": "hard",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 6,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 7,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 8,
+          "type": "concept",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "concept",
+          "error_detail": "数量关系理解错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 9,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 10,
+          "type": "concept",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 11,
+          "type": "calculation",
+          "correct": true,
+          "difficulty": "medium",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 12,
+          "type": "calculation",
+          "correct": false,
+          "difficulty": "medium",
+          "error_type": "concept",
+          "error_detail": "定理适用错误",
+          "confidence": 1.0,
+          "source": "mock"
+        },
+        {
+          "q_num": 13,
+          "type": "fill_blank",
+          "correct": true,
+          "difficulty": "easy",
+          "error_type": null,
+          "error_detail": null,
+          "confidence": 1.0,
+          "source": "mock"
+        }
+      ],
+      "summary": {
+        "accuracy": 0.7692,
+        "completion": 1.0,
+        "hard_correct_rate": 1.0,
+        "error_type_distribution": {
+          "careless": 0,
+          "concept": 2,
+          "calculation": 1,
+          "method": 0,
+          "reading": 0
+        }
+      },
+      "week": 4
+    }
+  ]
+}

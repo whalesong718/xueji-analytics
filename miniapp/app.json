@@ -1,0 +1,41 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/add-homework/add-homework",
+    "pages/report/report",
+    "pages/history/history"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#4F7CFF",
+    "navigationBarTitleText": "学迹分析",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F5F7FA"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#4F7CFF",
+    "backgroundColor": "#fff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home_active.png"
+      },
+      {
+        "pagePath": "pages/add-homework/add-homework",
+        "text": "录入",
+        "iconPath": "images/add.png",
+        "selectedIconPath": "images/add_active.png"
+      },
+      {
+        "pagePath": "pages/history/history",
+        "text": "历史",
+        "iconPath": "images/history.png",
+        "selectedIconPath": "images/history_active.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json"
+}
