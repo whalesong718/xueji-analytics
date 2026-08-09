@@ -87,22 +87,43 @@ class VisionPipeline:
 
         logger.info("融合后: %d 题, %d 处分歧", len(merged), len(conflicts))
 
-        # 2.5 文本复判：不看图，只根据题目+作答重新核算（提升正确率）
+        # 2.5 本地算术/公式先行核算（确定性结果优先，不被后续模型覆盖）
+        try:
+            merged = apply_local_checks(merged)
+            local_locked = {
+                j.q_num for j in merged
+                if float(j.confidence or 0) >= 0.95 and j.correct is not None
+            }
+            logger.info("本地核算锁定: %d/%d 题", len(local_locked), len(merged))
+        except Exception as e:
+            local_locked = set()
+            logger.warning("本地核算失败: %s", e)
+
+        # 2.6 文本复判：只复判本地未锁定的题（避免模型把算对的改错）
         try:
             text_provider = load_practice_model() or self.providers[0]
             rejudge_client = ModelClient(text_provider, timeout=_MODEL_TIMEOUT)
-            merged = rejudge_client.rejudge_text(merged, grade=grade)
-            logger.info("文本复判完成: %d 题", len(merged))
+            unlocked = [j for j in merged if j.q_num not in local_locked]
+            if unlocked:
+                rejudged = rejudge_client.rejudge_text(unlocked, grade=grade)
+                by_num = {j.q_num: j for j in rejudged}
+                merged = [
+                    by_num.get(j.q_num, j) if j.q_num not in local_locked else j
+                    for j in merged
+                ]
+                logger.info("文本复判完成: %d 题（跳过本地锁定 %d 题）", len(unlocked), len(local_locked))
+            else:
+                logger.info("全部题目已被本地核算锁定，跳过文本复判")
         except Exception as e:
-            logger.warning("文本复判失败，沿用视觉结果: %s", e)
+            logger.warning("文本复判失败，沿用当前结果: %s", e)
 
-        # 2.6 本地算术核算兜底（可解析的四则运算）
+        # 2.7 复判后再跑一遍本地核算（纠正复判误判，并补上新抽出的可算题）
         try:
             merged = apply_local_checks(merged)
         except Exception as e:
-            logger.warning("本地核算失败: %s", e)
+            logger.warning("二次本地核算失败: %s", e)
 
-        # 2.7 判题纠偏：高置信“全对卷”不要被偶发误判拉低
+        # 2.8 判题纠偏：高置信“全对卷”不要被偶发误判拉低
         merged = self._normalize_judgements(merged)
 
         # 3. 组装 Homework
@@ -234,9 +255,19 @@ class VisionPipeline:
 
         场景：整张卷子多数题高置信正确，却夹着 1-2 题低置信“错”。
         这类情况更像模型幻觉，优先按“对”处理，避免全对卷被判 40%。
+        注意：本地核算锁定的高置信错题（conf>=0.95）绝不改动。
         """
         if not judgements:
             return judgements
+
+        # 对题不允许残留错误类型
+        for j in judgements:
+            if j.correct is True:
+                j.error_type = None
+                j.error_detail = None
+            elif j.correct is None:
+                j.error_type = None
+                j.error_detail = None
 
         answered = [j for j in judgements if j.correct is not None]
         if len(answered) < 3:

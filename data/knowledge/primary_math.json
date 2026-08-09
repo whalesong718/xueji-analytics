@@ -114,6 +114,31 @@
       "reason": "125×8=1000，答案正确"
     },
     {
+      "content": "12+8×2",
+      "student_answer": "28",
+      "correct": true,
+      "reason": "先乘后加：8×2=16，12+16=28"
+    },
+    {
+      "content": "12+8×2",
+      "student_answer": "40",
+      "correct": false,
+      "error_type": "method",
+      "reason": "应先乘后加得28，学生按从左到右算成40"
+    },
+    {
+      "content": "1/2+1/4",
+      "student_answer": "3/4",
+      "correct": true,
+      "reason": "通分后 2/4+1/4=3/4"
+    },
+    {
+      "content": "比较大小：3/4○2/3",
+      "student_answer": ">",
+      "correct": true,
+      "reason": "3/4=0.75，2/3≈0.667，3/4更大"
+    },
+    {
       "content": "一个三角形三个内角中，两个角分别是 65° 和 40°，第三个角是多少度？",
       "student_answer": "75°",
       "correct": true,

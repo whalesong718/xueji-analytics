@@ -215,15 +215,25 @@ EXTRACT_AND_JUDGE_PROMPT = """你是严谨的小学/初中数学批改老师。�
 1. 提取每道题的题目和学生作答
 2. 判断每题对错
 
+【提取规则——非常重要】
+1. 逐题完整提取，不要合并、不要跳号、不要漏题。
+2. content 写题干（不含学生最终答案）；student_answer 只写学生最终作答。
+3. 若学生把答案写在题干等号后（如 12+8=20），content 用 12+8，student_answer 用 20。
+4. 竖式题：读最下方结果作为 student_answer。
+5. 手写易混：6/0、1/7、5/S、8/B、./, 仔细区分。
+6. 看不清的数字用 null，不要猜。
+
 【最高优先级判题规则】
 1. 只根据“题目要求 + 学生作答”判断，不要臆造学生没写的内容。
-2. 只要学生最终答案正确，就判 correct=true。
-3. 书写潦草、格式不漂亮、步骤不完整，但答案正确：仍然 correct=true。
-4. 只有最终答案明确错误，才判 correct=false。
-5. 看不清/空白/无法确认：correct=null（空题），不要猜成错误。
-6. 全对卷子必须全部 correct=true，不能随便判错。
-7. 对题：error_type 和 error_detail 必须是 null。
-8. 错题：才填 error_type（5选1）和 error_detail。
+2. 先心算正确答案，再和学生作答比对。
+3. 只要学生最终答案正确，就判 correct=true。
+4. 书写潦草、格式不漂亮、步骤不完整，但答案正确：仍然 correct=true。
+5. 只有最终答案明确错误，才判 correct=false。
+6. 看不清/空白/无法确认：correct=null（空题），不要猜成错误。
+7. 全对卷子必须全部 correct=true，不能随便判错。
+8. 对题：error_type 和 error_detail 必须是 null。
+9. 错题：才填 error_type（5选1）和 error_detail（写“应为x，学生写y”）。
+10. 分数/小数等价、单位写法差异，数值对就判对。
 
 【输出要求】
 - 只输出 JSON，不要解释
@@ -264,15 +274,24 @@ TEXT_REJUDGE_PROMPT = """你是严谨的数学批改老师。现在不看图片�
 输入题目列表（JSON）：
 {questions_json}
 
-【最高优先级】
-1. 只根据题目要求和 student_answer 判断。
-2. 最终答案正确 => correct=true。
-3. 最终答案明确错误 => correct=false。
-4. 作答为空/看不清/无法确认 => correct=null。
-5. 对题 error_type/error_detail 必须为 null。
-6. 错题才给 error_type（careless/concept/calculation/method/reading）和简短 error_detail。
-7. 不要改 q_num，不要丢题，不要新增题。
-8. 数学符号用人能看懂的写法，禁止 LaTeX。
+【强制步骤——每题都必须先做】
+A. 先独立算出/推出本题正确答案（expected_answer）
+B. 再把 expected_answer 与 student_answer 对比
+C. 一致 => correct=true；明确不一致 => correct=false
+D. 作答为空/无法确认 => correct=null
+
+【判定细则】
+1. 只根据题目要求和 student_answer 判断，不要臆造作答。
+2. 最终数值/结论正确即判对；步骤潦草、格式不美不影响对错。
+3. 单位：题目未强制单位格式时，数值对就算对（20 与 20厘米 都可对）。
+4. 分数与小数：1/2 与 0.5 等价算对；约分后的等值分数算对。
+5. 比较大小：只看符号是否正确。
+6. 对题：error_type/error_detail 必须为 null。
+7. 错题：给 error_type（careless/concept/calculation/method/reading）和简短 error_detail，
+   error_detail 里写“应为xxx，学生写xxx”。
+8. 不要改 q_num，不要丢题，不要新增题。
+9. 数学符号用人能看懂的写法，禁止 LaTeX。
+10. 拿不准时：correct=null，confidence<=0.5，不要硬判错。
 
 只输出 JSON：
 ```json
@@ -280,6 +299,7 @@ TEXT_REJUDGE_PROMPT = """你是严谨的数学批改老师。现在不看图片�
   "questions": [
     {{
       "q_num": 1,
+      "expected_answer": "正确答案",
       "correct": true,
       "error_type": null,
       "error_detail": null,
@@ -499,27 +519,33 @@ def _extract_json(text: str) -> Optional[dict]:
 # 图片压缩预处理
 # ---------------------------------------------------------------------------
 
-# 长边超过此值就缩放（视觉模型不需要超高分辨率，1024px 够识别作业）
-_MAX_SIDE = 1024
-_JPEG_QUALITY = 85
+# 长边超过此值就缩放。
+# 作业手写字偏小，1024 容易糊；提到 1600 更利于读数，体积仍可控。
+_MAX_SIDE = 1600
+_JPEG_QUALITY = 90
 
 
 def compress_image(image_bytes: bytes) -> bytes:
-    """压缩图片：长边缩到 1024px、转 JPEG quality=85。
+    """压缩图片：长边缩到 1600px、转 JPEG quality=90。
 
     手机拍的作业照动辄 3-5MB、4000+ 像素，既费 token 又可能超模型限制。
-    压缩后通常 100-300KB，识别效果不受影响，省钱省时。
+    适度保留清晰度，减少把 6 认成 0、把小数点看丢的情况。
 
     若 PIL 不可用或非图片，原样返回（不阻断流程）。
     """
     try:
         from PIL import Image
+        from PIL import ImageOps, ImageEnhance
         import io
 
         img = Image.open(io.BytesIO(image_bytes))
+        # 按 EXIF 纠正手机旋转，避免横竖颠倒导致漏题
+        img = ImageOps.exif_transpose(img)
 
         # 转 RGB（去掉 alpha 通道，JPEG 不支持）
         if img.mode in ("RGBA", "LA", "P"):
+            img = img.convert("RGB")
+        elif img.mode != "RGB":
             img = img.convert("RGB")
 
         # 长边缩放
@@ -527,6 +553,13 @@ def compress_image(image_bytes: bytes) -> bytes:
         if max(w, h) > _MAX_SIDE:
             ratio = _MAX_SIDE / max(w, h)
             img = img.resize((int(w * ratio), int(h * ratio)), Image.LANCZOS)
+
+        # 轻微提亮对比，利于铅笔/淡笔迹识别（不做二值化，避免丢信息）
+        try:
+            img = ImageEnhance.Contrast(img).enhance(1.15)
+            img = ImageEnhance.Sharpness(img).enhance(1.1)
+        except Exception:
+            pass
 
         buf = io.BytesIO()
         img.save(buf, format="JPEG", quality=_JPEG_QUALITY, optimize=True)
