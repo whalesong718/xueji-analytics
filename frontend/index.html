@@ -476,9 +476,9 @@
           ${previewUrl ? `<img class="photo-preview" src="${previewUrl}" alt="作业照片预览">` : ''}
           <div class="upload-progress">
             <div class="spinner"></div>
-            <div style="font-weight:600;margin-bottom:4px;">AI 正在识别和分析...</div>
+            <div style="font-weight:600;margin-bottom:4px;" id="upload-status-text">AI 正在识别题目...</div>
             <div style="font-size:13px;">识别题目 → 判定对错 → 生成报告和练习题</div>
-            <div style="font-size:12px;margin-top:8px;color:var(--text-secondary);">约需 20-30 秒，请稍候</div>
+            <div style="font-size:12px;margin-top:8px;color:var(--text-secondary);">通常 20-40 秒，请稍候</div>
           </div>
         </div>
       `;
@@ -488,6 +488,20 @@
       fd.append('subject', subject);
       fd.append('grade', grade);
       fd.append('image', file);
+
+      // 进度文案轮播，避免“卡住了”的感觉
+      const statusEl = document.getElementById('upload-status-text');
+      const stages = [
+        'AI 正在识别题目...',
+        'AI 正在判定对错...',
+        'AI 正在生成报告...',
+        'AI 正在生成练习题...',
+      ];
+      let stageIdx = 0;
+      const stageTimer = setInterval(() => {
+        stageIdx = Math.min(stageIdx + 1, stages.length - 1);
+        if (statusEl) statusEl.textContent = stages[stageIdx];
+      }, 8000);
 
       try {
         const res = await fetch(`${API}/homework/upload`, { method: 'POST', body: fd });
@@ -507,6 +521,8 @@
             <button class="btn btn-primary" onclick="loadCamera()" style="margin-top:16px;">重新拍照</button>
           </div>
         `;
+      } finally {
+        clearInterval(stageTimer);
       }
     }
 

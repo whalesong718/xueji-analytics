@@ -166,64 +166,59 @@ JUDGE_PROMPT = """你是一个经验丰富的教师，正在批改学生的作�
 
 
 # 合并版：图转md + 判题一次搞定（省一半调用/时间/钱）
-EXTRACT_AND_JUDGE_PROMPT = """你是一位经验丰富的教师，正在批改学生拍照上传的作业。
+EXTRACT_AND_JUDGE_PROMPT = """你是严谨的小学/初中数学批改老师。你的第一目标是：正确率必须准确。
 
-请仔细看这张作业照片，完成两件事：
-1. 提取每道题的题目内容和学生作答
-2. 判断每题对错，对错题归类错误类型
+请看这张作业照片，完成两件事：
+1. 提取每道题的题目和学生作答
+2. 判断每题对错
 
-输出格式（严格按此 JSON 结构，不要输出其他内容）：
+【最高优先级判题规则】
+1. 只根据“题目要求 + 学生作答”判断，不要臆造学生没写的内容。
+2. 只要学生最终答案正确，就判 correct=true。
+3. 书写潦草、格式不漂亮、步骤不完整，但答案正确：仍然 correct=true。
+4. 只有最终答案明确错误，才判 correct=false。
+5. 看不清/空白/无法确认：correct=null（空题），不要猜成错误。
+6. 全对卷子必须全部 correct=true，不能随便判错。
+7. 对题：error_type 和 error_detail 必须是 null。
+8. 错题：才填 error_type（5选1）和 error_detail。
+
+【输出要求】
+- 只输出 JSON，不要解释
+- 数学符号用人能看懂的写法（1/2、x^2、根号2），禁止 LaTeX
+- 示例仅说明格式，不要照抄示例对错
+
+输出格式：
 ```json
 {
   "questions": [
     {
       "q_num": 1,
       "type": "calculation",
-      "content": "题目的完整文字内容，数学符号用人能直接看懂的写法（如 1/2、x^2、根号2、约等于），不要用 LaTeX",
-      "student_answer": "学生的作答内容，没有作答则为 null",
+      "content": "题目内容",
+      "student_answer": "学生作答",
       "correct": true,
       "error_type": null,
       "error_detail": null,
       "difficulty": "easy",
-      "confidence": 0.9
-    },
-    {
-      "q_num": 2,
-      "type": "word_problem",
-      "content": "题目内容",
-      "student_answer": "学生作答",
-      "correct": false,
-      "error_type": "calculation",
-      "error_detail": "简述错误原因",
-      "difficulty": "medium",
-      "confidence": 0.85
+      "confidence": 0.95
     }
   ]
 }
 ```
 
 字段说明：
-- type 题型：calculation(计算题) / word_problem(应用题) / concept(概念题) / fill_blank(填空题) / choice(选择题)
-- content / student_answer / error_detail：全部用普通人能直接看懂的文字和数学符号，禁止 LaTeX、禁止 $...$、禁止 \\frac \\sqrt 这类代码写法
-- correct: true=做对, false=做错, null=未作答(空题)
-- error_type（仅错题填，5选1，对题和空题为 null）：
-  - careless: 粗心/习惯（抄错数、漏符号、会做但做错）
-  - concept: 概念不清（公式记错、定理理解错）
-  - calculation: 计算失误（进位错、算错数）
-  - method: 方法错误（解题方向错、用错方法）
-  - reading: 审题错误（看错条件、答非所问）
-- difficulty: easy/medium/hard
-- confidence: 你对判定的把握 0-1
-- 判题要尽量稳定：同一张卷子同一作答，多次批改结论应一致
-
-如果照片不清晰或不是作业，返回 {"questions": []}。
-只输出 JSON，不要解释。"""
+- type: calculation / word_problem / concept / fill_blank / choice
+- correct: true=对, false=错, null=未作答/看不清
+- error_type 仅错题可填：careless / concept / calculation / method / reading
+- difficulty: easy / medium / hard
+- confidence: 0-1
+"""
 
 
 class ModelClient:
     """单个 provider 的视觉模型客户端。"""
 
-    def __init__(self, provider: ProviderConfig, timeout: float = 60.0):
+    def __init__(self, provider: ProviderConfig, timeout: float = 45.0):
         self.provider = provider
         self.timeout = timeout
 

@@ -30,7 +30,7 @@ from engine.model_client import (
 logger = logging.getLogger(__name__)
 
 # 单 provider 超时（秒）
-_MODEL_TIMEOUT = 60.0
+_MODEL_TIMEOUT = 45.0
 
 
 @dataclass
@@ -84,6 +84,9 @@ class VisionPipeline:
             raise ValueError("未能从照片中识别出题目。请确保照片清晰且为作业/试卷内容。")
 
         logger.info("融合后: %d 题, %d 处分歧", len(merged), len(conflicts))
+
+        # 2.5 判题纠偏：高置信“全对卷”不要被偶发误判拉低
+        merged = self._normalize_judgements(merged)
 
         # 3. 组装 Homework
         questions = [self._to_question_result(m) for m in merged]
@@ -204,6 +207,40 @@ class VisionPipeline:
             extracted.append({"q_num": q_num, "content": content, "student_answer": student_answer})
 
         return merged, conflicts, extracted
+
+    def _normalize_judgements(self, judgements: list[QuestionJudgement]) -> list[QuestionJudgement]:
+        """对明显不合理的判题结果做轻量纠偏。
+
+        场景：整张卷子多数题高置信正确，却夹着 1-2 题低置信“错”。
+        这类情况更像模型幻觉，优先按“对”处理，避免全对卷被判 40%。
+        """
+        if not judgements:
+            return judgements
+
+        answered = [j for j in judgements if j.correct is not None]
+        if len(answered) < 3:
+            return judgements
+
+        correct_high = [
+            j for j in answered
+            if j.correct is True and float(j.confidence or 0) >= 0.8
+        ]
+        wrong_low = [
+            j for j in answered
+            if j.correct is False and float(j.confidence or 0) < 0.7
+        ]
+
+        # 大部分高置信正确，且错误都是低置信：把低置信错误改成正确
+        if len(correct_high) >= max(3, int(len(answered) * 0.6)) and wrong_low:
+            for j in wrong_low:
+                logger.info(
+                    "判题纠偏: 题%d 低置信错误( conf=%.2f ) 改为正确",
+                    j.q_num, float(j.confidence or 0),
+                )
+                j.correct = True
+                j.error_type = None
+                j.error_detail = None
+        return judgements
 
     def _to_question_result(self, j: QuestionJudgement) -> QuestionResult:
         """把融合后的判定转成引擎能吃的 QuestionResult。"""

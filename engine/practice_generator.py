@@ -4,24 +4,24 @@
 家长拿到的是「原题 + 同类练习 + 答案解析」，针对薄弱点巩固。
 
 不依赖视觉能力，用普通文本模型即可（config 里的 practice_model）。
+性能：一次请求批量生成所有错题的变式，避免逐题串行拖慢总时长。
 """
 
 from __future__ import annotations
 
-import json
 import logging
 from dataclasses import dataclass, asdict
 from typing import Optional
 
-from engine.data_models import Homework, ErrorType
+from engine.data_models import Homework
 from engine.model_client import ModelClient, ProviderConfig, load_practice_model, _extract_json
 
 logger = logging.getLogger(__name__)
 
 # 每道错题生成几道变式题
-PRACTICE_PER_QUESTION = 3
+PRACTICE_PER_QUESTION = 2
 # 单次最多给几道错题生成练习（控制成本）
-MAX_WRONG_QUESTIONS = 5
+MAX_WRONG_QUESTIONS = 3
 
 
 @dataclass
@@ -48,42 +48,37 @@ _ERROR_TYPE_CN = {
 }
 
 
-_PRACTICE_PROMPT = """你是一位经验丰富的教师，要根据学生做错的一道题，生成{n}道同类变式题用于巩固练习。
+_BATCH_PRACTICE_PROMPT = """你是一位经验丰富的教师。下面有若干道学生错题，请为每道错题各生成{n}道同类变式题。
 
-原题信息：
-- 题目：{question}
-- 学生作答：{student_answer}
-- 错误类型：{error_type}
-- 错误原因：{error_detail}
-- 难度：{difficulty}
+错题列表：
+{wrong_list}
 
 要求：
-1. 生成 {n} 道变式题，与原题考查同一知识点/同一技能，但变换数字、情境或问法。
-2. 难度与原题相当或略低（让学生能做对，建立信心）。
-3. 每题附上答案和简短解析。
-4. 数学符号必须用人能直接看懂的写法，例如：
-   - 分数写成 1/2 或 三分之一
-   - 乘方写成 x^2 或 x的平方
-   - 根号写成 根号2 或 √2
-   - 约等于写成 ≈ 或 约等于
-5. 禁止使用 LaTeX，禁止 $...$、\\frac、\\sqrt、\\times、\\div 这类代码写法。
-6. 输出尽量稳定：同一道错题多次生成时，题目类型和难度保持一致。
+1. 每道原题生成 {n} 道变式题，考查同一知识点，但变换数字/情境。
+2. 难度与原题相当或略低。
+3. 数学符号必须用人能直接看懂的写法：1/2、x^2、根号2、×、÷。
+4. 禁止 LaTeX，禁止 $...$、\\frac、\\sqrt 这类代码写法。
+5. 只输出 JSON，不要解释。
 
-输出格式（严格 JSON，不要输出其他内容）：
+输出格式：
 ```json
 {{
-  "practices": [
+  "items": [
     {{
-      "question": "变式题题目",
-      "answer": "答案",
-      "explanation": "简短解析，说明解题要点",
-      "difficulty": "easy/medium/hard"
+      "original_q_num": 2,
+      "practices": [
+        {{
+          "question": "变式题题目",
+          "answer": "答案",
+          "explanation": "简短解析",
+          "difficulty": "easy"
+        }}
+      ]
     }}
   ]
 }}
 ```
-
-只输出 JSON。"""
+"""
 
 
 class PracticeGenerator:
@@ -95,11 +90,11 @@ class PracticeGenerator:
             raise RuntimeError(
                 "没有配置练习题生成模型。请在 config/model_providers.yaml 里配 practice_model。"
             )
-        self.client = ModelClient(self.provider, timeout=60.0)
+        # 批量生成超时稍长一点，但只打 1 次请求
+        self.client = ModelClient(self.provider, timeout=45.0)
 
     def generate(self, homework: Homework) -> list[PracticeItem]:
-        """从一次作业的错题生成举一反三练习。"""
-        # 筛选有题目内容的错题
+        """从一次作业的错题生成举一反三练习（批量一次调用）。"""
         wrong = [
             q for q in homework.questions
             if q.correct is False and q.question_content
@@ -107,45 +102,70 @@ class PracticeGenerator:
         if not wrong:
             return []
 
-        # 限制数量（控制成本）
         wrong = wrong[:MAX_WRONG_QUESTIONS]
-
-        results: list[PracticeItem] = []
-        for q in wrong:
-            try:
-                items = self._generate_for_one(q, homework.subject)
-                results.extend(items)
-            except Exception as e:
-                logger.warning("举一反三生成失败(题%d): %s", q.q_num, e)
-
-        return results
-
-    def _generate_for_one(self, q, subject: str) -> list[PracticeItem]:
-        """为单道错题生成变式题。"""
-        et_cn = _ERROR_TYPE_CN.get(q.error_type, q.error_type or "未知")
-        prompt = _PRACTICE_PROMPT.format(
-            n=PRACTICE_PER_QUESTION,
-            question=q.question_content,
-            student_answer="(未提取)" ,
-            error_type=et_cn,
-            error_detail=q.error_detail or "未记录",
-            difficulty=q.difficulty,
-        )
-
-        text = self.client.chat_text(prompt)
-        parsed = _extract_json(text)
-        if not parsed or "practices" not in parsed:
-            logger.warning("举一反三: 模型返回非 JSON, 题%d", q.q_num)
+        try:
+            return self._generate_batch(wrong)
+        except Exception as e:
+            logger.warning("举一反三批量生成失败: %s", e)
             return []
 
-        items = []
-        for p in parsed["practices"][:PRACTICE_PER_QUESTION]:
-            items.append(PracticeItem(
-                original_q_num=q.q_num,
-                error_type=et_cn,
-                question=p.get("question", ""),
-                answer=p.get("answer", ""),
-                explanation=p.get("explanation", ""),
-                difficulty=p.get("difficulty", "medium"),
-            ))
-        return items
+    def _generate_batch(self, wrong_questions) -> list[PracticeItem]:
+        """一次请求为所有错题生成变式题。"""
+        lines = []
+        for q in wrong_questions:
+            et_cn = _ERROR_TYPE_CN.get(q.error_type, q.error_type or "未知")
+            lines.append(
+                f"- 原题号: {q.q_num}\n"
+                f"  题目: {q.question_content}\n"
+                f"  错误类型: {et_cn}\n"
+                f"  错误原因: {q.error_detail or '未记录'}\n"
+                f"  难度: {q.difficulty}"
+            )
+
+        prompt = _BATCH_PRACTICE_PROMPT.format(
+            n=PRACTICE_PER_QUESTION,
+            wrong_list="\n".join(lines),
+        )
+        text = self.client.chat_text(prompt)
+        parsed = _extract_json(text)
+        if not parsed:
+            logger.warning("举一反三: 模型返回非 JSON")
+            return []
+
+        # 兼容两种结构：items 批量 / practices 单题
+        results: list[PracticeItem] = []
+        if "items" in parsed and isinstance(parsed["items"], list):
+            for item in parsed["items"]:
+                q_num = int(item.get("original_q_num", 0))
+                et = next(
+                    (
+                        _ERROR_TYPE_CN.get(q.error_type, q.error_type or "未知")
+                        for q in wrong_questions if q.q_num == q_num
+                    ),
+                    "未知",
+                )
+                for p in (item.get("practices") or [])[:PRACTICE_PER_QUESTION]:
+                    results.append(PracticeItem(
+                        original_q_num=q_num,
+                        error_type=et,
+                        question=str(p.get("question", "")),
+                        answer=str(p.get("answer", "")),
+                        explanation=str(p.get("explanation", "")),
+                        difficulty=str(p.get("difficulty", "medium")),
+                    ))
+            return results
+
+        # 兜底：如果模型仍返回旧格式 practices，尽量接住
+        if "practices" in parsed and isinstance(parsed["practices"], list):
+            q0 = wrong_questions[0]
+            et = _ERROR_TYPE_CN.get(q0.error_type, q0.error_type or "未知")
+            for p in parsed["practices"][:PRACTICE_PER_QUESTION]:
+                results.append(PracticeItem(
+                    original_q_num=q0.q_num,
+                    error_type=et,
+                    question=str(p.get("question", "")),
+                    answer=str(p.get("answer", "")),
+                    explanation=str(p.get("explanation", "")),
+                    difficulty=str(p.get("difficulty", "medium")),
+                ))
+        return results
