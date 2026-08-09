@@ -424,16 +424,54 @@
       uploadPhoto(file);
     }
 
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('读取照片失败'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // 把模型偶发输出的 LaTeX 转成人能直接看懂的符号
+    function humanizeMath(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/\$\$([\s\S]*?)\$\$/g, '$1')
+        .replace(/\$([^$]+)\$/g, '$1')
+        .replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, '($1)/($2)')
+        .replace(/\\sqrt\{([^{}]+)\}/g, '√($1)')
+        .replace(/\\times/g, '×')
+        .replace(/\\div/g, '÷')
+        .replace(/\\pm/g, '±')
+        .replace(/\\approx/g, '≈')
+        .replace(/\\leq/g, '≤')
+        .replace(/\\geq/g, '≥')
+        .replace(/\\neq/g, '≠')
+        .replace(/\\cdot/g, '·')
+        .replace(/\\left|\\right/g, '')
+        .replace(/\\[a-zA-Z]+/g, '')
+        .replace(/[{}]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
     async function uploadPhoto(file) {
       const el = document.getElementById('camera-content');
       const subject = document.getElementById('cam-subject').value;
       const grade = parseInt(document.getElementById('cam-grade').value);
 
-      // 预览图 + loading
-      const previewUrl = URL.createObjectURL(file);
+      // base64 预览：比 blob URL 更稳，避免部分 WebView 里“照片打不开”
+      let previewUrl = '';
+      try {
+        previewUrl = await fileToDataUrl(file);
+      } catch (e) {
+        previewUrl = '';
+      }
+
       el.innerHTML = `
         <div class="card">
-          <img class="photo-preview" src="${previewUrl}">
+          ${previewUrl ? `<img class="photo-preview" src="${previewUrl}" alt="作业照片预览">` : ''}
           <div class="upload-progress">
             <div class="spinner"></div>
             <div style="font-weight:600;margin-bottom:4px;">AI 正在识别和分析...</div>
@@ -456,10 +494,13 @@
           throw new Error(err.detail || 'HTTP ' + res.status);
         }
         const data = await res.json();
-        renderPhotoResult(data, previewUrl);
+        // 优先本地预览；本地失败时回退服务端图片
+        const imageUrl = previewUrl || (data.image_url ? data.image_url : '');
+        renderPhotoResult(data, imageUrl);
       } catch (e) {
         el.innerHTML = `
           <div class="card">
+            ${previewUrl ? `<img class="photo-preview" src="${previewUrl}" alt="作业照片预览">` : ''}
             <div class="error-state">❌ 分析失败：${e.message}</div>
             <button class="btn btn-primary" onclick="loadCamera()" style="margin-top:16px;">重新拍照</button>
           </div>
@@ -484,7 +525,7 @@
 
       el.innerHTML = `
         <div class="card">
-          <img class="photo-preview" src="${previewUrl}">
+          ${previewUrl ? `<img class="photo-preview" src="${previewUrl}" alt="作业照片" onerror="this.style.display='none'">` : ''}
           <div class="card-title">✅ 分析完成</div>
           <div class="metrics">
             <div class="metric">
@@ -534,10 +575,10 @@
                 <div style="font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">原题 ${qnum} 的变式练习：</div>
                 ${items.map((p, i) => `
                   <div class="practice-card">
-                    <span class="practice-tag">${p.error_type} · ${p.difficulty}</span>
-                    <div class="practice-q">${i+1}. ${p.question}</div>
-                    <div class="practice-a">答案：${p.answer}</div>
-                    <div class="practice-e">${p.explanation}</div>
+                    <span class="practice-tag">${humanizeMath(p.error_type)} · ${humanizeMath(p.difficulty)}</span>
+                    <div class="practice-q">${i+1}. ${humanizeMath(p.question)}</div>
+                    <div class="practice-a">答案：${humanizeMath(p.answer)}</div>
+                    <div class="practice-e">${humanizeMath(p.explanation)}</div>
                   </div>
                 `).join('')}
               </div>

@@ -109,7 +109,7 @@ EXTRACT_PROMPT = """你是一个作业识别助手。请仔细分析这张作业
     {
       "q_num": 1,
       "type": "calculation",
-      "content": "题目的完整文字内容，保留数学符号，用 LaTeX 格式书写公式",
+      "content": "题目的完整文字内容，数学符号用人能直接看懂的写法（如 1/2、x^2、根号2、约等于），不要用 LaTeX",
       "student_answer": "学生的作答内容，如果没有作答则为 null",
       "difficulty": "easy/medium/hard"
     }
@@ -160,6 +160,7 @@ JUDGE_PROMPT = """你是一个经验丰富的教师，正在批改学生的作�
   - reading: 审题错误（看错条件、答非所问）
 - difficulty: easy/medium/hard
 - confidence: 你对判定的把握 0-1
+- 判题要尽量稳定：同一题同一作答，多次批改结论应一致
 
 只输出 JSON，不要解释。"""
 
@@ -178,7 +179,7 @@ EXTRACT_AND_JUDGE_PROMPT = """你是一位经验丰富的教师，正在批改�
     {
       "q_num": 1,
       "type": "calculation",
-      "content": "题目的完整文字内容，保留数学符号，用 LaTeX 格式书写公式",
+      "content": "题目的完整文字内容，数学符号用人能直接看懂的写法（如 1/2、x^2、根号2、约等于），不要用 LaTeX",
       "student_answer": "学生的作答内容，没有作答则为 null",
       "correct": true,
       "error_type": null,
@@ -203,6 +204,7 @@ EXTRACT_AND_JUDGE_PROMPT = """你是一位经验丰富的教师，正在批改�
 
 字段说明：
 - type 题型：calculation(计算题) / word_problem(应用题) / concept(概念题) / fill_blank(填空题) / choice(选择题)
+- content / student_answer / error_detail：全部用普通人能直接看懂的文字和数学符号，禁止 LaTeX、禁止 $...$、禁止 \\frac \\sqrt 这类代码写法
 - correct: true=做对, false=做错, null=未作答(空题)
 - error_type（仅错题填，5选1，对题和空题为 null）：
   - careless: 粗心/习惯（抄错数、漏符号、会做但做错）
@@ -212,6 +214,7 @@ EXTRACT_AND_JUDGE_PROMPT = """你是一位经验丰富的教师，正在批改�
   - reading: 审题错误（看错条件、答非所问）
 - difficulty: easy/medium/hard
 - confidence: 你对判定的把握 0-1
+- 判题要尽量稳定：同一张卷子同一作答，多次批改结论应一致
 
 如果照片不清晰或不是作业，返回 {"questions": []}。
 只输出 JSON，不要解释。"""
@@ -253,7 +256,9 @@ class ModelClient:
         payload = {
             "model": self.provider.model,
             "messages": final_messages,
-            "temperature": 0.1,  # 判题要确定性，低温
+            # 判题要尽量稳定：同一卷子多次分析结论应接近
+            "temperature": 0,
+            "top_p": 1,
         }
 
         with httpx.Client(timeout=self.timeout) as client:

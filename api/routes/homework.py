@@ -7,9 +7,11 @@
 
 import logging
 from datetime import datetime
+from pathlib import Path
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query, UploadFile, File, Form
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, field_validator
 
 from db import repository
@@ -18,6 +20,8 @@ from engine.data_models import Homework, QuestionResult
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+UPLOAD_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "uploads"
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class QuestionInput(BaseModel):
@@ -224,6 +228,14 @@ async def upload_homework_image(
 
     hw = result.homework
 
+    # 照片落盘，方便后续回看（前端也可直接用返回的 image_url）
+    photo_path = UPLOAD_DIR / f"{hw.homework_id}.jpg"
+    try:
+        photo_path.write_bytes(image_bytes)
+    except Exception as e:
+        logger.warning("保存上传照片失败: %s", e)
+        photo_path = None
+
     # 2. 存库
     repository.save_homework(hw)
 
@@ -290,6 +302,7 @@ async def upload_homework_image(
         "homework": _homework_to_output(hw, datetime.now().isoformat()).model_dump(),
         "provider_count": result.provider_count,
         "conflicts": result.conflicts,
+        "image_url": f"/api/v1/homework/{hw.homework_id}/image" if photo_path and photo_path.exists() else None,
         "trend": results["trend"],
         "current_accuracy": results["homework_stats"][-1].accuracy if results["homework_stats"] else 0,
         "mastery": bkt_summary,
@@ -298,3 +311,12 @@ async def upload_homework_image(
         "report_sections": [s.to_dict() for s in report.sections],
         "practices": practices,
     }
+
+
+@router.get("/homework/{homework_id}/image")
+async def get_homework_image(homework_id: str):
+    """回看某次作业上传的照片。"""
+    path = UPLOAD_DIR / f"{homework_id}.jpg"
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="照片不存在或已被清理")
+    return FileResponse(path, media_type="image/jpeg", filename=f"{homework_id}.jpg")
