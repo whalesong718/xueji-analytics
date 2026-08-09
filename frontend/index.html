@@ -433,14 +433,17 @@
       });
     }
 
-    // 把模型偶发输出的 LaTeX 转成人能直接看懂的符号
+    // 把模型偶发输出的 LaTeX/乱码公式转成人能直接看懂的符号
     function humanizeMath(text) {
       if (!text) return '';
       return String(text)
         .replace(/\$\$([\s\S]*?)\$\$/g, '$1')
         .replace(/\$([^$]+)\$/g, '$1')
+        .replace(/\\begin\{[^}]+\}/g, '')
+        .replace(/\\end\{[^}]+\}/g, '')
         .replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, '($1)/($2)')
         .replace(/\\frac\s*([0-9a-zA-Z]+)\s*([0-9a-zA-Z]+)/g, '($1)/($2)')
+        .replace(/\\dfrac\{([^{}]+)\}\{([^{}]+)\}/g, '($1)/($2)')
         .replace(/\\sqrt\{([^{}]+)\}/g, '√($1)')
         .replace(/\\sqrt\s*([0-9a-zA-Z]+)/g, '√$1')
         .replace(/\\times/g, '×')
@@ -454,8 +457,16 @@
         .replace(/\\left|\\right/g, '')
         .replace(/\\[a-zA-Z]+/g, '')
         .replace(/[{}]/g, '')
+        .replace(/&/g, ' ')
+        .replace(/\\\\/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
+    }
+
+    function correctLabel(v) {
+      if (v === true) return '✅ 正确';
+      if (v === false) return '❌ 错误';
+      return '⬜ 未作答/看不清';
     }
 
     async function uploadPhoto(file) {
@@ -532,6 +543,7 @@
       const accPct = (hw.accuracy * 100).toFixed(0);
       const accCls = accPct >= 70 ? 'good' : accPct >= 50 ? 'mid' : 'bad';
       const practices = data.practices || [];
+      const questions = data.questions || [];
 
       // 按原题分组练习题
       const practicesByQ = {};
@@ -563,6 +575,19 @@
               <div class="metric-label">做错</div>
             </div>
           </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📝 AI识别与判题明细</div>
+          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">请核对下面结果；如果和卷面不一致，说明模型仍有误判。</p>
+          ${(questions.length ? questions : []).map(q => {
+            const et = q.error_type ? (TYPE_CN[q.error_type] || q.error_type) : '';
+            return '<div class="suggestion">' +
+              '<div style="font-weight:600;margin-bottom:4px;">第' + q.q_num + '题 · ' + correctLabel(q.correct) + '</div>' +
+              '<div style="font-size:13px;margin-bottom:2px;">题目：' + humanizeMath(q.content || '（未识别到题目文字）') + '</div>' +
+              (q.correct === false ? ('<div style="font-size:13px;color:var(--danger);">原因：' + humanizeMath((et ? (et + ' · ') : '') + (q.error_detail || '未说明')) + '</div>') : '') +
+              '</div>';
+          }).join('') || '<div class="empty-state">暂无题目明细</div>'}
         </div>
 
         <div class="card">

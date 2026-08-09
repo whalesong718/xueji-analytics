@@ -298,11 +298,25 @@ async def upload_homework_image(
     except Exception:
         pass
 
+    # 题目明细：方便家长核对 AI 识别和判题是否准确
+    question_details = []
+    for q in hw.questions:
+        question_details.append({
+            "q_num": q.q_num,
+            "content": q.question_content or "",
+            "correct": q.correct,
+            "error_type": q.error_type,
+            "error_detail": q.error_detail,
+            "difficulty": q.difficulty,
+            "confidence": q.confidence,
+        })
+
     return {
         "homework": _homework_to_output(hw, datetime.now().isoformat()).model_dump(),
         "provider_count": result.provider_count,
         "conflicts": result.conflicts,
         "image_url": f"/api/v1/homework/{hw.homework_id}/image" if photo_path and photo_path.exists() else None,
+        "questions": question_details,
         "trend": results["trend"],
         "current_accuracy": results["homework_stats"][-1].accuracy if results["homework_stats"] else 0,
         "mastery": bkt_summary,

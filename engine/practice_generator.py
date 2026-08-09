@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from dataclasses import dataclass, asdict
 from typing import Optional
 
@@ -22,6 +23,27 @@ logger = logging.getLogger(__name__)
 PRACTICE_PER_QUESTION = 2
 # 单次最多给几道错题生成练习（控制成本）
 MAX_WRONG_QUESTIONS = 3
+
+
+def humanize_math_text(text: str) -> str:
+    """把模型偶发输出的代码化公式，转成家长能直接读的文字。"""
+    if not text:
+        return ""
+    s = str(text)
+    s = re.sub(r"\$\$([\s\S]*?)\$\$", r"\1", s)
+    s = re.sub(r"\$([^$]+)\$", r"\1", s)
+    s = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"(\1)/(\2)", s)
+    s = re.sub(r"\\frac\s*([0-9a-zA-Z]+)\s*([0-9a-zA-Z]+)", r"(\1)/(\2)", s)
+    s = re.sub(r"\\sqrt\{([^{}]+)\}", r"√(\1)", s)
+    s = re.sub(r"\\sqrt\s*([0-9a-zA-Z]+)", r"√\1", s)
+    s = s.replace("\\times", "×").replace("\\div", "÷")
+    s = s.replace("\\pm", "±").replace("\\approx", "≈")
+    s = s.replace("\\leq", "≤").replace("\\geq", "≥").replace("\\neq", "≠").replace("\\cdot", "·")
+    s = re.sub(r"\\left|\\right", "", s)
+    s = re.sub(r"\\[a-zA-Z]+", "", s)
+    s = re.sub(r"[{}]", "", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
 
 
 @dataclass
@@ -56,9 +78,11 @@ _BATCH_PRACTICE_PROMPT = """你是一位经验丰富的教师。下面有若干�
 要求：
 1. 每道原题生成 {n} 道变式题，考查同一知识点，但变换数字/情境。
 2. 难度与原题相当或略低。
-3. 数学符号必须用人能直接看懂的写法：1/2、x^2、根号2、×、÷。
-4. 禁止 LaTeX，禁止 $...$、\\frac、\\sqrt 这类代码写法。
-5. 只输出 JSON，不要解释。
+3. 题目、答案、解析都必须是中文短句，家长能直接看懂。
+4. 数学符号只允许：+ - × ÷ = ≈ < > 1/2 x^2 根号2。
+5. 禁止任何代码写法：LaTeX、$...$、\\frac、\\sqrt、\\times、begin、end、pmatrix。
+6. 解析控制在 1-2 句，不要长篇公式推导。
+7. 只输出 JSON，不要解释。
 
 输出格式：
 ```json
@@ -148,9 +172,9 @@ class PracticeGenerator:
                     results.append(PracticeItem(
                         original_q_num=q_num,
                         error_type=et,
-                        question=str(p.get("question", "")),
-                        answer=str(p.get("answer", "")),
-                        explanation=str(p.get("explanation", "")),
+                        question=humanize_math_text(str(p.get("question", ""))),
+                        answer=humanize_math_text(str(p.get("answer", ""))),
+                        explanation=humanize_math_text(str(p.get("explanation", ""))),
                         difficulty=str(p.get("difficulty", "medium")),
                     ))
             return results
@@ -163,9 +187,9 @@ class PracticeGenerator:
                 results.append(PracticeItem(
                     original_q_num=q0.q_num,
                     error_type=et,
-                    question=str(p.get("question", "")),
-                    answer=str(p.get("answer", "")),
-                    explanation=str(p.get("explanation", "")),
+                    question=humanize_math_text(str(p.get("question", ""))),
+                    answer=humanize_math_text(str(p.get("answer", ""))),
+                    explanation=humanize_math_text(str(p.get("explanation", ""))),
                     difficulty=str(p.get("difficulty", "medium")),
                 ))
         return results
