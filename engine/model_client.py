@@ -258,6 +258,39 @@ EXTRACT_AND_JUDGE_PROMPT = """你是严谨的小学/初中数学批改老师。�
 """
 
 
+# 文本复判：只根据已提取的“题目+作答”核算对错（不看图）
+TEXT_REJUDGE_PROMPT = """你是严谨的数学批改老师。现在不看图片，只根据下面已提取的题目和学生作答，重新核算每题对错。
+
+输入题目列表（JSON）：
+{questions_json}
+
+【最高优先级】
+1. 只根据题目要求和 student_answer 判断。
+2. 最终答案正确 => correct=true。
+3. 最终答案明确错误 => correct=false。
+4. 作答为空/看不清/无法确认 => correct=null。
+5. 对题 error_type/error_detail 必须为 null。
+6. 错题才给 error_type（careless/concept/calculation/method/reading）和简短 error_detail。
+7. 不要改 q_num，不要丢题，不要新增题。
+8. 数学符号用人能看懂的写法，禁止 LaTeX。
+
+只输出 JSON：
+```json
+{{
+  "questions": [
+    {{
+      "q_num": 1,
+      "correct": true,
+      "error_type": null,
+      "error_detail": null,
+      "confidence": 0.95
+    }}
+  ]
+}}
+```
+"""
+
+
 class ModelClient:
     """单个 provider 的视觉模型客户端。"""
 
@@ -372,8 +405,61 @@ class ModelClient:
             ))
         return results
 
+    def rejudge_text(self, judgements: list[QuestionJudgement], grade: int = 4) -> list[QuestionJudgement]:
+        """文本复判：不看图，只根据题目+作答重新核算对错。"""
+        if not judgements:
+            return []
+
+        payload = []
+        for j in judgements:
+            payload.append({
+                "q_num": j.q_num,
+                "type": j.question_type,
+                "content": j.question_content,
+                "student_answer": j.student_answer,
+                "difficulty": j.difficulty,
+            })
+
+        knowledge = load_math_knowledge(grade)
+        prompt = TEXT_REJUDGE_PROMPT.format(
+            questions_json=json.dumps(payload, ensure_ascii=False),
+        )
+        if knowledge:
+            prompt += "\n\n" + knowledge + "\n\n请结合教材要点复判，优先保证对错准确。"
+
+        text = self.chat_text(prompt)
+        parsed = _extract_json(text)
+        if not parsed or "questions" not in parsed:
+            return judgements
+
+        by_num = {int(x.get("q_num", 0)): x for x in parsed.get("questions", []) if isinstance(x, dict)}
+        updated: list[QuestionJudgement] = []
+        for j in judgements:
+            item = by_num.get(j.q_num)
+            if not item:
+                updated.append(j)
+                continue
+            correct = item.get("correct", j.correct)
+            error_type = item.get("error_type")
+            error_detail = item.get("error_detail")
+            if correct is True:
+                error_type = None
+                error_detail = None
+            updated.append(QuestionJudgement(
+                q_num=j.q_num,
+                correct=correct,
+                error_type=error_type,
+                error_detail=error_detail,
+                difficulty=j.difficulty,
+                confidence=float(item.get("confidence", max(j.confidence, 0.85))),
+                question_type=j.question_type,
+                question_content=j.question_content,
+                student_answer=j.student_answer,
+            ))
+        return updated
+
     def chat_text(self, prompt: str) -> str:
-        """纯文本对话（举一反三用）。"""
+        """纯文本对话（举一反三/文本复判用）。"""
         return self._chat([{"role": "user", "content": prompt}])
 
 

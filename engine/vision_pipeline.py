@@ -19,11 +19,13 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
+from engine.answer_checker import apply_local_checks
 from engine.data_models import Homework, QuestionResult, AnswerSource, ErrorType
 from engine.model_client import (
     ModelClient,
     ProviderConfig,
     QuestionJudgement,
+    load_practice_model,
     load_providers,
 )
 
@@ -85,7 +87,22 @@ class VisionPipeline:
 
         logger.info("融合后: %d 题, %d 处分歧", len(merged), len(conflicts))
 
-        # 2.5 判题纠偏：高置信“全对卷”不要被偶发误判拉低
+        # 2.5 文本复判：不看图，只根据题目+作答重新核算（提升正确率）
+        try:
+            text_provider = load_practice_model() or self.providers[0]
+            rejudge_client = ModelClient(text_provider, timeout=_MODEL_TIMEOUT)
+            merged = rejudge_client.rejudge_text(merged, grade=grade)
+            logger.info("文本复判完成: %d 题", len(merged))
+        except Exception as e:
+            logger.warning("文本复判失败，沿用视觉结果: %s", e)
+
+        # 2.6 本地算术核算兜底（可解析的四则运算）
+        try:
+            merged = apply_local_checks(merged)
+        except Exception as e:
+            logger.warning("本地核算失败: %s", e)
+
+        # 2.7 判题纠偏：高置信“全对卷”不要被偶发误判拉低
         merged = self._normalize_judgements(merged)
 
         # 3. 组装 Homework
