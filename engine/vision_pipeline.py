@@ -68,8 +68,8 @@ class VisionPipeline:
         """
         date = date or datetime.now().strftime("%Y-%m-%d")
 
-        # 1. 所有 provider 并发做「提取+判题」一次调用
-        all_judgements = self._extract_and_judge_all(image_bytes)
+        # 1. 所有 provider 并发做「提取+判题」一次调用（注入对应年级教材知识）
+        all_judgements = self._extract_and_judge_all(image_bytes, grade=grade)
         provider_count = len(all_judgements)
 
         if not all_judgements:
@@ -105,12 +105,16 @@ class VisionPipeline:
             conflicts=conflicts,
         )
 
-    def _extract_and_judge_all(self, image_bytes: bytes) -> dict[str, list[QuestionJudgement]]:
+    def _extract_and_judge_all(self, image_bytes: bytes, grade: int = 4) -> dict[str, list[QuestionJudgement]]:
         """所有 provider 并发做提取+判题。返回 {provider_name: [judgements]}。"""
         results: dict[str, list[QuestionJudgement]] = {}
         with ThreadPoolExecutor(max_workers=len(self.providers)) as pool:
             futures = {
-                pool.submit(ModelClient(p, timeout=_MODEL_TIMEOUT).extract_and_judge, image_bytes): p.name
+                pool.submit(
+                    ModelClient(p, timeout=_MODEL_TIMEOUT).extract_and_judge,
+                    image_bytes,
+                    grade,
+                ): p.name
                 for p in self.providers
             }
             for fut in as_completed(futures):

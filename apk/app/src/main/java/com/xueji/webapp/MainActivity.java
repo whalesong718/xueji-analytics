@@ -27,8 +27,8 @@ import androidx.core.content.ContextCompat;
 public class MainActivity extends AppCompatActivity {
 
     // ====== 改这里切换地址 ======
-    // 局域网调试用电脑 IP；上线后改成公网域名
-    private static final String APP_URL = "http://192.168.1.2:8000/";
+    // 公网地址（Railway），带版本参数减少 WebView 缓存
+    private static final String APP_URL = "https://xueji-api-production.up.railway.app/?v=20260809c";
     // ============================
 
     private WebView webView;

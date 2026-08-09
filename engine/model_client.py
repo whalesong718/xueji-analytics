@@ -28,6 +28,7 @@ import yaml
 # ---------------------------------------------------------------------------
 
 _CONFIG_PATH = Path(__file__).resolve().parent.parent / "config" / "model_providers.yaml"
+_KNOWLEDGE_PATH = Path(__file__).resolve().parent.parent / "data" / "knowledge" / "primary_math.json"
 
 
 @dataclass
@@ -74,6 +75,48 @@ def load_practice_model() -> Optional[ProviderConfig]:
         model=pm["model"],
         api_key=key,
     )
+
+
+def load_math_knowledge(grade: int = 4) -> str:
+    """加载小学数学教材知识库，并整理成可注入 prompt 的文本。"""
+    if not _KNOWLEDGE_PATH.exists():
+        return ""
+    try:
+        raw = json.loads(_KNOWLEDGE_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return ""
+
+    g = str(grade)
+    grade_info = (raw.get("grades") or {}).get(g) or (raw.get("grades") or {}).get("4") or {}
+    topics = grade_info.get("topics") or []
+    rules = grade_info.get("rules") or []
+    common_errors = grade_info.get("common_errors") or []
+    principles = raw.get("grading_principles") or []
+    few_shot = raw.get("few_shot") or []
+
+    lines = [f"【{g}年级数学教材要点】"]
+    if topics:
+        lines.append("知识点：" + "、".join(topics[:8]))
+    if rules:
+        lines.append("判定规则：")
+        for r in rules[:6]:
+            lines.append(f"- {r}")
+    if common_errors:
+        lines.append("常见错误：")
+        for e in common_errors[:5]:
+            lines.append(f"- {e}")
+    if principles:
+        lines.append("总原则：")
+        for p in principles[:5]:
+            lines.append(f"- {p}")
+    if few_shot:
+        lines.append("参考样例：")
+        for s in few_shot[:4]:
+            ans = s.get("student_answer", "")
+            ok = "对" if s.get("correct") is True else ("错" if s.get("correct") is False else "空")
+            reason = s.get("reason", "")
+            lines.append(f"- 题：{s.get('content','')}；作答：{ans}；判定：{ok}；说明：{reason}")
+    return "\n".join(lines)
 
 
 # ---------------------------------------------------------------------------
@@ -298,13 +341,17 @@ class ModelClient:
             ))
         return results
 
-    def extract_and_judge(self, image_bytes: bytes) -> list[QuestionJudgement]:
+    def extract_and_judge(self, image_bytes: bytes, grade: int = 4) -> list[QuestionJudgement]:
         """合并版：一次调用同时提取题目内容 + 判定对错。
 
         省一半调用时间/费用。返回的 QuestionJudgement 含 question_content。
         """
+        knowledge = load_math_knowledge(grade)
+        prompt = EXTRACT_AND_JUDGE_PROMPT
+        if knowledge:
+            prompt = EXTRACT_AND_JUDGE_PROMPT + "\n\n" + knowledge + "\n\n请结合以上教材要点批改，优先保证对错准确。"
         text = self._chat(
-            [{"role": "user", "content": EXTRACT_AND_JUDGE_PROMPT}],
+            [{"role": "user", "content": prompt}],
             image_bytes=image_bytes,
         )
         parsed = _extract_json(text)

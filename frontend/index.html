@@ -423,6 +423,8 @@
   </nav>
 
   <script>
+    // 加版本参数，减少手机 WebView 缓存旧前端
+    const APP_VERSION = '20260809c';
     const API = '/api/v1';
     // 默认学生（后续可加学生选择）
     const DEFAULT_STUDENT = 'student_001';
@@ -605,24 +607,35 @@
     }
 
     function photoBlockHtml(src, altText) {
-      if (!src) return '';
-      const safeSrc = String(src).replace(/"/g, '&quot;');
+      // 即使 src 暂时为空，也始终展示“查看大图”按钮，避免用户找不到入口
+      const safeSrc = src ? String(src).replace(/"/g, '&quot;') : '';
+      const imgHtml = safeSrc
+        ? ('<img class="photo-preview" id="result-photo" src="' + safeSrc + '" alt="' + (altText || '作业照片') + '">')
+        : '<div class="empty-state" id="result-photo-empty">照片预览暂不可用，仍可尝试查看大图</div>';
       return '' +
-        '<img class="photo-preview" src="' + safeSrc + '" alt="' + (altText || '作业照片') + '">' +
+        imgHtml +
         '<div class="photo-actions">' +
           '<button type="button" class="btn btn-primary" id="btn-view-photo">查看大图</button>' +
         '</div>';
     }
 
     function bindPhotoButtons(photoSrc) {
-      window._lastPhotoSrc = photoSrc || '';
+      window._lastPhotoSrc = photoSrc || window._lastPhotoSrc || '';
       const btn = document.getElementById('btn-view-photo');
       if (btn) {
-        btn.addEventListener('click', function(e) {
+        btn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
           openPhotoViewer(window._lastPhotoSrc);
-        });
+        };
+      }
+      const img = document.getElementById('result-photo');
+      if (img) {
+        img.onclick = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          openPhotoViewer(img.src || window._lastPhotoSrc);
+        };
       }
     }
 
@@ -680,7 +693,14 @@
         }
         const data = await res.json();
         // 优先本地预览；本地失败时回退服务端图片
-        const imageUrl = previewUrl || (data.image_url ? data.image_url : '');
+        // 本地预览优先；没有则用服务端 image_url（补成绝对路径）
+        let imageUrl = previewUrl || '';
+        if (!imageUrl && data.image_url) {
+          imageUrl = data.image_url.startsWith('http')
+            ? data.image_url
+            : (window.location.origin + data.image_url);
+        }
+        window._lastPhotoSrc = imageUrl || window._lastPhotoSrc || '';
         renderPhotoResult(data, imageUrl);
       } catch (e) {
         el.innerHTML = `
@@ -1172,6 +1192,9 @@
     }
 
     bindPhotoViewerEvents();
+    // 暴露版本，方便确认是否拉到新前端
+    window.__XUEJI_VERSION__ = APP_VERSION;
+    console.log('xueji frontend', APP_VERSION);
     loadCamera();
   </script>
 </body>
