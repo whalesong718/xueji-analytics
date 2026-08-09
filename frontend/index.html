@@ -266,56 +266,81 @@
     }
     .photo-preview {
       width: 100%;
-      max-height: 200px;
-      object-fit: cover;
+      max-height: 220px;
+      object-fit: contain;
+      background: #111;
       border-radius: 12px;
-      margin-bottom: 6px;
-      cursor: zoom-in;
+      margin-bottom: 8px;
       display: block;
     }
-    .photo-hint {
-      font-size: 12px;
-      color: var(--text-secondary);
+    .photo-actions {
+      display: flex;
+      gap: 8px;
       margin-bottom: 12px;
+    }
+    .photo-actions .btn {
+      flex: 1;
+      padding: 10px 12px;
+      font-size: 14px;
     }
     .photo-viewer {
       display: none;
       position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.92);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.95);
+      z-index: 2147483646;
+      padding: 0;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .photo-viewer.active {
+      display: block;
+    }
+    .photo-viewer-inner {
+      min-height: 100%;
       display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 56px 12px 48px;
+      box-sizing: border-box;
     }
     .photo-viewer img {
+      width: 100%;
       max-width: 100%;
-      max-height: 100%;
+      height: auto;
       object-fit: contain;
       border-radius: 8px;
+      background: #000;
     }
     .photo-viewer-close {
-      position: absolute;
-      top: 14px;
-      right: 16px;
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 2147483647;
       color: #fff;
-      font-size: 28px;
+      font-size: 22px;
       line-height: 1;
-      background: transparent;
-      border: none;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 18px;
+      padding: 8px 12px;
       cursor: pointer;
     }
     .photo-viewer-tip {
-      position: absolute;
-      bottom: 18px;
+      position: fixed;
+      bottom: 14px;
       left: 0;
       right: 0;
       text-align: center;
-      color: rgba(255,255,255,0.8);
+      color: rgba(255,255,255,0.85);
       font-size: 13px;
+      z-index: 2147483647;
+      pointer-events: none;
     }
     /* 举一反三练习卡 */
     .practice-card {
@@ -374,10 +399,12 @@
 
   <div id="toast" class="toast"></div>
 
-  <div id="photo-viewer" class="photo-viewer" onclick="closePhotoViewer()">
-    <button class="photo-viewer-close" type="button" aria-label="关闭">×</button>
-    <img id="photo-viewer-img" src="" alt="作业照片大图" onclick="event.stopPropagation()">
-    <div class="photo-viewer-tip">点击空白处关闭</div>
+  <div id="photo-viewer" class="photo-viewer">
+    <button id="photo-viewer-close" class="photo-viewer-close" type="button" aria-label="关闭">关闭</button>
+    <div class="photo-viewer-inner" id="photo-viewer-inner">
+      <img id="photo-viewer-img" src="" alt="作业照片大图">
+    </div>
+    <div class="photo-viewer-tip">可双指缩放浏览，点“关闭”返回</div>
   </div>
 
   <nav class="tab-bar">
@@ -521,22 +548,82 @@
       return '⬜ 未作答/看不清';
     }
 
+    function resolvePhotoSrc(src) {
+      if (!src) return '';
+      // 相对路径补成绝对地址，避免 WebView 解析失败
+      if (src.startsWith('/')) return window.location.origin + src;
+      return src;
+    }
+
     function openPhotoViewer(src) {
-      if (!src) {
+      const finalSrc = resolvePhotoSrc(src || window._lastPhotoSrc || '');
+      if (!finalSrc) {
         toast('暂无可查看的照片');
         return;
       }
       const viewer = document.getElementById('photo-viewer');
       const img = document.getElementById('photo-viewer-img');
-      img.src = src;
+      if (!viewer || !img) {
+        toast('预览组件未加载');
+        return;
+      }
+      window._lastPhotoSrc = finalSrc;
+      img.onload = function() {
+        // 打开后滚到顶部，确保大图可见
+        viewer.scrollTop = 0;
+      };
+      img.onerror = function() {
+        toast('照片加载失败');
+        closePhotoViewer();
+      };
+      img.src = finalSrc;
       viewer.classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
     function closePhotoViewer() {
       const viewer = document.getElementById('photo-viewer');
       const img = document.getElementById('photo-viewer-img');
-      viewer.classList.remove('active');
-      img.src = '';
+      if (viewer) viewer.classList.remove('active');
+      if (img) img.src = '';
+      document.body.style.overflow = '';
+    }
+
+    function bindPhotoViewerEvents() {
+      const closeBtn = document.getElementById('photo-viewer-close');
+      if (closeBtn && !closeBtn._bound) {
+        closeBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          closePhotoViewer();
+        });
+        closeBtn._bound = true;
+      }
+      // 兜底：全局可调用
+      window.openPhotoViewer = openPhotoViewer;
+      window.closePhotoViewer = closePhotoViewer;
+    }
+
+    function photoBlockHtml(src, altText) {
+      if (!src) return '';
+      const safeSrc = String(src).replace(/"/g, '&quot;');
+      return '' +
+        '<img class="photo-preview" src="' + safeSrc + '" alt="' + (altText || '作业照片') + '">' +
+        '<div class="photo-actions">' +
+          '<button type="button" class="btn btn-primary" id="btn-view-photo">查看大图</button>' +
+        '</div>';
+    }
+
+    function bindPhotoButtons(photoSrc) {
+      window._lastPhotoSrc = photoSrc || '';
+      const btn = document.getElementById('btn-view-photo');
+      if (btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          openPhotoViewer(window._lastPhotoSrc);
+        });
+      }
     }
 
     async function uploadPhoto(file) {
@@ -554,7 +641,7 @@
 
       el.innerHTML = `
         <div class="card">
-          ${previewUrl ? `<img class="photo-preview" src="${previewUrl}" alt="作业照片预览" onclick="openPhotoViewer(this.src)"><div class="photo-hint">点击照片可放大查看</div>` : ''}
+          ${photoBlockHtml(previewUrl, '作业照片预览')}
           <div class="upload-progress">
             <div class="spinner"></div>
             <div style="font-weight:600;margin-bottom:4px;" id="upload-status-text">AI 正在识别题目...</div>
@@ -563,6 +650,7 @@
           </div>
         </div>
       `;
+      bindPhotoButtons(previewUrl);
 
       const fd = new FormData();
       fd.append('student_id', DEFAULT_STUDENT);
@@ -597,11 +685,12 @@
       } catch (e) {
         el.innerHTML = `
           <div class="card">
-            ${previewUrl ? `<img class="photo-preview" src="${previewUrl}" alt="作业照片预览" onclick="openPhotoViewer(this.src)"><div class="photo-hint">点击照片可放大查看</div>` : ''}
+            ${photoBlockHtml(previewUrl, '作业照片预览')}
             <div class="error-state">❌ 分析失败：${e.message}</div>
             <button class="btn btn-primary" onclick="loadCamera()" style="margin-top:16px;">重新拍照</button>
           </div>
         `;
+        bindPhotoButtons(previewUrl);
       } finally {
         clearInterval(stageTimer);
       }
@@ -625,7 +714,7 @@
 
       el.innerHTML = `
         <div class="card">
-          ${previewUrl ? `<img class="photo-preview" src="${previewUrl}" alt="作业照片" onclick="openPhotoViewer(this.src)" onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.style.display='none');"><div class="photo-hint">点击照片可放大查看</div>` : ''}
+          ${photoBlockHtml(previewUrl, '作业照片')}
           <div class="card-title">✅ 分析完成</div>
           <div class="metrics">
             <div class="metric">
@@ -720,6 +809,7 @@
         report_text: data.report_text || '',
         report_sections: data.report_sections || [],
       };
+      bindPhotoButtons(previewUrl);
     }
 
     // ---------- 首页 ----------
@@ -1081,6 +1171,7 @@
       showFullReport(reportRow.report_text);
     }
 
+    bindPhotoViewerEvents();
     loadCamera();
   </script>
 </body>
