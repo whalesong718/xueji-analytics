@@ -359,6 +359,53 @@
       margin-bottom: 6px;
     }
 
+    /* 分析结果：三页横滑 */
+    .result-shell { padding-bottom: 12px; }
+    .result-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 10px 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--bg);
+    }
+    .result-tab {
+      flex: 1;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text-secondary);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .result-tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .result-swipe {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .result-swipe::-webkit-scrollbar { display: none; }
+    .result-page {
+      min-width: 100%;
+      scroll-snap-align: start;
+      box-sizing: border-box;
+      padding-bottom: 8px;
+    }
+    .swipe-hint {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 12px;
+      padding: 4px 16px 8px;
+    }
+
     @media (max-width: 380px) {
       .card { margin: 8px 10px; padding: 12px; }
       .metric-value { font-size: 20px; }
@@ -424,7 +471,7 @@
 
   <script>
     // 加版本参数，减少手机 WebView 缓存旧前端
-    const APP_VERSION = '20260809d';
+    const APP_VERSION = '20260809e';
     const API = '/api/v1';
     // 默认学生（后续可加学生选择）
     const DEFAULT_STUDENT = 'student_001';
@@ -732,10 +779,10 @@
         practicesByQ[k].push(p);
       });
 
-      el.innerHTML = `
+      const gradeHtml = `
         <div class="card">
           ${photoBlockHtml(previewUrl, '作业照片')}
-          <div class="card-title">✅ 分析完成</div>
+          <div class="card-title">✅ 判定对错</div>
           <div class="metrics">
             <div class="metric">
               <div class="metric-value ${accCls}">${accPct}%</div>
@@ -755,10 +802,9 @@
             </div>
           </div>
         </div>
-
         <div class="card">
-          <div class="card-title">📝 AI识别与判题明细</div>
-          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">请核对下面结果；如果和卷面不一致，说明模型仍有误判。</p>
+          <div class="card-title">📝 逐题判定</div>
+          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">左右滑动可切换：判定对错 → 分析报告 → 举一反三</p>
           ${(questions.length ? questions : []).map(q => {
             const et = q.error_type ? (TYPE_CN[q.error_type] || q.error_type) : '';
             return '<div class="suggestion">' +
@@ -769,7 +815,29 @@
               '</div>';
           }).join('') || '<div class="empty-state">暂无题目明细</div>'}
         </div>
+        <div class="card" style="text-align:center;">
+          <button class="btn btn-secondary" onclick="loadCamera()" style="width:auto;padding:10px 24px;">📷 再拍一次</button>
+        </div>
+      `;
 
+      const reportHtml = `
+        <div class="card">
+          <div class="card-title">📊 分析报告</div>
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-value ${accCls}">${accPct}%</div>
+              <div class="metric-label">正确率</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value">${hw.total_questions}</div>
+              <div class="metric-label">总题数</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value">${(data.rules || []).length}</div>
+              <div class="metric-label">规则触发</div>
+            </div>
+          </div>
+        </div>
         <div class="card">
           <div class="card-title">🧠 掌握度</div>
           <div class="mastery-list">
@@ -780,7 +848,6 @@
             }).join('')}
           </div>
         </div>
-
         <div class="card">
           <div class="card-title">💡 学习建议</div>
           ${(data.report_sections && data.report_sections[4] ? data.report_sections[4].items : []).map(s => {
@@ -788,27 +855,6 @@
             return '<div class="suggestion"><div style="font-weight:500;margin-bottom:2px;"><span style="color:' + color + '">●</span> ' + s.problem + '</div><div style="font-size:13px;color:var(--text-secondary);">' + s.suggestion + '</div></div>';
           }).join('') || '<div class="empty-state">暂无建议</div>'}
         </div>
-
-        ${practices.length > 0 ? `
-          <div class="card">
-            <div class="card-title">✏️ 举一反三（${practices.length} 道练习）</div>
-            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">针对错题生成的同类练习，巩固薄弱点</p>
-            ${Object.entries(practicesByQ).map(([qnum, items]) => `
-              <div style="margin-bottom:16px;">
-                <div style="font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">原题 ${qnum} 的变式练习：</div>
-                ${items.map((p, i) => `
-                  <div class="practice-card">
-                    <span class="practice-tag">${humanizeMath(p.error_type)} · ${humanizeMath(p.difficulty)}</span>
-                    <div class="practice-q">${i+1}. ${humanizeMath(p.question)}</div>
-                    <div class="practice-a">答案：${humanizeMath(p.answer)}</div>
-                    <div class="practice-e">${humanizeMath(p.explanation)}</div>
-                  </div>
-                `).join('')}
-              </div>
-            `).join('')}
-          </div>
-        ` : ''}
-
         <div class="card">
           <div class="card-title">📋 规则结论</div>
           ${(data.rules || []).map(r => {
@@ -816,21 +862,89 @@
             return '<div class="rule-item"><span class="rule-icon">' + icon + '</span><span>[' + r.rule_id + '] ' + r.message + '</span></div>';
           }).join('') || '<div class="empty-state">暂无规则触发</div>'}
         </div>
-
         <div class="card" style="text-align:center;">
           <button class="btn btn-primary" onclick="showFullReport()" style="width:auto;padding:12px 32px;">查看完整报告 📄</button>
         </div>
+      `;
 
-        <div class="card" style="text-align:center;">
-          <button class="btn btn-secondary" onclick="loadCamera()" style="width:auto;padding:10px 24px;">📷 再拍一次</button>
+      const practiceHtml = practices.length > 0 ? `
+        <div class="card">
+          <div class="card-title">✏️ 举一反三（${practices.length} 道练习）</div>
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">针对错题生成的同类练习，巩固薄弱点</p>
+          ${Object.entries(practicesByQ).map(([qnum, items]) => `
+            <div style="margin-bottom:16px;">
+              <div style="font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">原题 ${qnum} 的变式练习：</div>
+              ${items.map((p, i) => `
+                <div class="practice-card">
+                  <span class="practice-tag">${humanizeMath(p.error_type)} · ${humanizeMath(p.difficulty)}</span>
+                  <div class="practice-q">${i+1}. ${humanizeMath(p.question)}</div>
+                  <div class="practice-a">答案：${humanizeMath(p.answer)}</div>
+                  <div class="practice-e">${humanizeMath(p.explanation)}</div>
+                </div>
+              `).join('')}
+            </div>
+          `).join('')}
+        </div>
+      ` : `
+        <div class="card">
+          <div class="card-title">✏️ 举一反三</div>
+          <div class="empty-state">本次没有识别到可生成练习的错题</div>
         </div>
       `;
+
+      el.innerHTML = `
+        <div class="result-shell">
+          <div class="result-tabs">
+            <button class="result-tab active" type="button" data-result-tab="0">判定对错</button>
+            <button class="result-tab" type="button" data-result-tab="1">分析报告</button>
+            <button class="result-tab" type="button" data-result-tab="2">举一反三</button>
+          </div>
+          <div class="swipe-hint">左右滑动切换页面</div>
+          <div class="result-swipe" id="result-swipe">
+            <div class="result-page" data-result-page="0">${gradeHtml}</div>
+            <div class="result-page" data-result-page="1">${reportHtml}</div>
+            <div class="result-page" data-result-page="2">${practiceHtml}</div>
+          </div>
+        </div>
+      `;
+
       // 缓存报告文本（按钮用 showFullReport()，从这里读取）
       window._reportData = {
         report_text: data.report_text || '',
         report_sections: data.report_sections || [],
       };
       bindPhotoButtons(previewUrl);
+      bindResultSwipe();
+    }
+
+    function bindResultSwipe() {
+      const swipe = document.getElementById('result-swipe');
+      if (!swipe) return;
+      const tabs = Array.from(document.querySelectorAll('.result-tab'));
+
+      function setActive(idx) {
+        tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', function() {
+          const idx = parseInt(tab.getAttribute('data-result-tab') || '0', 10);
+          const page = swipe.querySelector('[data-result-page="' + idx + '"]');
+          if (page) {
+            page.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+          }
+          setActive(idx);
+        });
+      });
+
+      let scrollTimer = null;
+      swipe.addEventListener('scroll', function() {
+        if (scrollTimer) clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(function() {
+          const idx = Math.round(swipe.scrollLeft / Math.max(swipe.clientWidth, 1));
+          setActive(Math.max(0, Math.min(2, idx)));
+        }, 40);
+      }, { passive: true });
     }
 
     // ---------- 首页 ----------
