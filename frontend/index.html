@@ -597,15 +597,18 @@
         </div>
 
         <div class="card" style="text-align:center;">
-          <button class="btn btn-primary" onclick="showFullReport(data.report_text)" style="width:auto;padding:12px 32px;">查看完整报告 📄</button>
+          <button class="btn btn-primary" onclick="showFullReport()" style="width:auto;padding:12px 32px;">查看完整报告 📄</button>
         </div>
 
         <div class="card" style="text-align:center;">
           <button class="btn btn-secondary" onclick="loadCamera()" style="width:auto;padding:10px 24px;">📷 再拍一次</button>
         </div>
       `;
-      // 缓存报告文本
-      window._reportData = { report_text: data.report_text };
+      // 缓存报告文本（按钮用 showFullReport()，从这里读取）
+      window._reportData = {
+        report_text: data.report_text || '',
+        report_sections: data.report_sections || [],
+      };
     }
 
     // ---------- 首页 ----------
@@ -712,10 +715,24 @@
     }
 
     function showFullReport(reportText) {
-      const text = reportText || (window._reportData && window._reportData.report_text);
-      if (!text) return;
-      document.getElementById('report-content').innerHTML = '<div class="card"><pre style="font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;font-family:inherit;">' + text + '</pre></div>';
-      showPage('report');
+      const text = reportText || (window._reportData && window._reportData.report_text) || '';
+      if (!text) {
+        toast('暂无完整报告可查看');
+        return;
+      }
+      // 转义 HTML，避免特殊字符破坏页面
+      const safe = String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      document.getElementById('report-content').innerHTML =
+        '<div class="card"><pre style="font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;font-family:inherit;">' +
+        safe +
+        '</pre></div>';
+      // 直接切到报告页，不触发 loadHome 覆盖内容
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-report').classList.add('active');
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
     }
 
     // ---------- 录入页 ----------
