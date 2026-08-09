@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     // ====== 改这里切换地址 ======
     // 公网地址（Railway），带版本参数减少 WebView 缓存
-    private static final String APP_URL = "https://xueji-api-production.up.railway.app/?v=20260809c";
+    private static final String APP_URL = "https://xueji-api-production.up.railway.app/?v=20260809d";
     // ============================
 
     private WebView webView;

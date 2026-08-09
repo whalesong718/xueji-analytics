@@ -304,6 +304,7 @@ async def upload_homework_image(
         question_details.append({
             "q_num": q.q_num,
             "content": q.question_content or "",
+            "student_answer": getattr(q, "student_answer", None) or "",
             "correct": q.correct,
             "error_type": q.error_type,
             "error_detail": q.error_detail,

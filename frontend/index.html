@@ -368,7 +368,7 @@
 <body>
   <header class="header">
     <h1>学迹分析</h1>
-    <p id="header-subtitle">学业轨迹智能分析</p>
+    <p id="header-subtitle">学业轨迹智能分析 <span id="app-version-badge" style="opacity:.75;font-size:11px;"></span></p>
   </header>
 
   <div id="page-home" class="page">
@@ -424,7 +424,7 @@
 
   <script>
     // 加版本参数，减少手机 WebView 缓存旧前端
-    const APP_VERSION = '20260809c';
+    const APP_VERSION = '20260809d';
     const API = '/api/v1';
     // 默认学生（后续可加学生选择）
     const DEFAULT_STUDENT = 'student_001';
@@ -764,6 +764,7 @@
             return '<div class="suggestion">' +
               '<div style="font-weight:600;margin-bottom:4px;">第' + q.q_num + '题 · ' + correctLabel(q.correct) + '</div>' +
               '<div style="font-size:13px;margin-bottom:2px;">题目：' + humanizeMath(q.content || '（未识别到题目文字）') + '</div>' +
+              '<div style="font-size:13px;margin-bottom:2px;">作答：' + humanizeMath(q.student_answer || '（未识别到作答）') + '</div>' +
               (q.correct === false ? ('<div style="font-size:13px;color:var(--danger);">原因：' + humanizeMath((et ? (et + ' · ') : '') + (q.error_detail || '未说明')) + '</div>') : '') +
               '</div>';
           }).join('') || '<div class="empty-state">暂无题目明细</div>'}
@@ -1195,6 +1196,8 @@
     // 暴露版本，方便确认是否拉到新前端
     window.__XUEJI_VERSION__ = APP_VERSION;
     console.log('xueji frontend', APP_VERSION);
+    const verBadge = document.getElementById('app-version-badge');
+    if (verBadge) verBadge.textContent = 'v' + APP_VERSION;
     loadCamera();
   </script>
 </body>

@@ -71,7 +71,8 @@ class QuestionResult:
     difficulty: str = Difficulty.MEDIUM.value
     confidence: float = 1.0
     source: str = AnswerSource.MOCK.value
-    question_content: Optional[str] = None  # 题目原文(md)，视觉判题才有，举一反三用
+    question_content: Optional[str] = None  # 题目原文，视觉判题才有，举一反三用
+    student_answer: Optional[str] = None  # 学生作答原文，视觉判题才有
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -88,6 +89,7 @@ class QuestionResult:
             confidence=float(data.get("confidence", 1.0)),
             source=str(data.get("source", AnswerSource.MOCK.value)),
             question_content=data.get("question_content"),
+            student_answer=data.get("student_answer"),
         )
 
 

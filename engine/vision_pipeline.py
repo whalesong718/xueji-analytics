@@ -250,16 +250,23 @@ class VisionPipeline:
         """把融合后的判定转成引擎能吃的 QuestionResult。"""
         # 校验 error_type 在合法枚举内
         et = j.error_type if j.error_type in {e.value for e in ErrorType} else None
+        # 对题不允许残留错误类型
+        if j.correct is True:
+            et = None
+            err_detail = None
+        else:
+            err_detail = j.error_detail
         return QuestionResult(
             q_num=j.q_num,
             type=j.question_type,
             correct=j.correct,
             error_type=et,
-            error_detail=j.error_detail,
+            error_detail=err_detail,
             difficulty=j.difficulty,
             confidence=j.confidence,
             source=AnswerSource.MODEL_CONSENSUS.value,
             question_content=j.question_content,
+            student_answer=j.student_answer,
         )
 
     def _build_homework(
